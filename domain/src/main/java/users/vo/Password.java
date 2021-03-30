@@ -26,4 +26,8 @@ public class Password {
     public Password changePassword(String password) {
         return new Password(password, expireAt);
     }
+
+    public Password changePassword(String password, Instant expireAt) {
+        return new Password(password, expireAt);
+    }
 }
