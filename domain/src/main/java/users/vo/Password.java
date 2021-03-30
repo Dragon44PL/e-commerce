@@ -19,7 +19,8 @@ public class Password {
     }
 
     public boolean isExpired() {
-        return this.createdAt.isBefore(expireAt);
+        final Instant now = Instant.now();
+        return now.isAfter(expireAt) || this.createdAt.isAfter(expireAt);
     }
 
     public Password changePassword(String password) {
