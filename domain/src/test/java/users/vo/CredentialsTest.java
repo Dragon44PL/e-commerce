@@ -1,4 +1,4 @@
-package user.vo;
+package users.vo;
 
 public class CredentialsTest {
 }
