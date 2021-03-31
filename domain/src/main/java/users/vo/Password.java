@@ -9,7 +9,7 @@ public class Password {
     private final Instant expireAt;
 
     public Password(String password, Instant expireAt) {
-        this(password, Instant.now(), expireAt);
+        this(password.toCharArray(), Instant.now(), expireAt);
     }
 
     public Password(String password) {
@@ -17,11 +17,11 @@ public class Password {
     }
 
     public Password(Password password) {
-        this(password.asString(), Instant.from(password.createdAt()), Instant.from(password.expireAt()));
+        this(password.asString().toCharArray(), Instant.from(password.createdAt()), Instant.from(password.expireAt()));
     }
 
-    private Password(String password, Instant createdAt, Instant expireAt) {
-        this.password = password.toCharArray();
+    private Password(char[] password, Instant createdAt, Instant expireAt) {
+        this.password = password;
         this.createdAt = createdAt;
         this.expireAt = expireAt;
     }
@@ -31,15 +31,7 @@ public class Password {
         return now.isAfter(expireAt) || this.createdAt.isAfter(expireAt);
     }
 
-    public Password changePassword(String password) {
-        return new Password(password, expireAt);
-    }
-
-    public Password changePassword(String password, Instant expireAt) {
-        return new Password(password, expireAt);
-    }
-
-    public boolean isCorrect(String check) {
+    public boolean same(String check) {
         final String current = new String(password);
         return current.equals(check);
     }

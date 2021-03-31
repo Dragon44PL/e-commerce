@@ -10,11 +10,11 @@ public class Credentials {
     }
 
     public Credentials(Credentials credentials) {
-        this(credentials.username, new Password(credentials.getPassword()));
+        this(credentials.getUsername(), credentials.getPassword());
     }
 
     public Credentials changePassword(Password candidate) {
-        return new Credentials(username, password);
+        return new Credentials(username, candidate);
     }
 
     public Credentials changeUsername(String username) {
@@ -26,6 +26,6 @@ public class Credentials {
     }
 
     public Password getPassword() {
-        return password;
+        return new Password(password);
     }
 }
