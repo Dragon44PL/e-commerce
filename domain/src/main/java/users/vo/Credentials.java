@@ -9,11 +9,23 @@ public class Credentials {
         this.password = password;
     }
 
-    public Credentials changePassword(Password password) {
+    public Credentials(Credentials credentials) {
+        this(credentials.username, new Password(credentials.getPassword()));
+    }
+
+    public Credentials changePassword(Password candidate) {
         return new Credentials(username, password);
     }
 
     public Credentials changeUsername(String username) {
         return new Credentials(username, password);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Password getPassword() {
+        return password;
     }
 }
