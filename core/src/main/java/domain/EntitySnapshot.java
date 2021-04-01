@@ -1,3 +1,3 @@
 package domain;
 
-public interface EntitySnapshot<I> { }
+public interface EntitySnapshot { }
