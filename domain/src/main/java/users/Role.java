@@ -4,8 +4,9 @@ import domain.Aggregate;
 import users.events.role.AuthorityAddedEvent;
 import users.events.role.AuthorityRemovedEvent;
 import users.events.role.RoleEvent;
-import users.snapshot.AuthoritySnapshot;
-import users.snapshot.RoleSnapshot;
+import users.snapshots.AuthoritySnapshot;
+import users.snapshots.RoleSnapshot;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

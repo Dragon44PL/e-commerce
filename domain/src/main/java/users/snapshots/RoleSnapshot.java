@@ -1,7 +1,6 @@
-package users.snapshot;
+package users.snapshots;
 
 import domain.EntitySnapshot;
-
 import java.util.Set;
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package users.snapshot;
+package users.snapshots;
 
 import domain.EntitySnapshot;
 
