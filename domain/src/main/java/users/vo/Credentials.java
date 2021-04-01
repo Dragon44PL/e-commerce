@@ -26,6 +26,6 @@ public class Credentials {
     }
 
     public Password getPassword() {
-        return Password.ofAnother(password);
+        return password;
     }
 }

@@ -1,8 +1,8 @@
 package users;
 
-import domain.Aggregate;
-import users.snapshot.AuthoritySnapshot;
 
+import domain.Aggregate;
+import users.snapshots.AuthoritySnapshot;
 import java.util.UUID;
 
 class Authority implements Aggregate<UUID, AuthoritySnapshot> {

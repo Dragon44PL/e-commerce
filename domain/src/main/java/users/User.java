@@ -3,8 +3,8 @@ package users;
 import domain.Aggregate;
 import users.events.user.*;
 import users.exception.CredentialsExpiredException;
-import users.snapshot.RoleSnapshot;
-import users.snapshot.UserSnapshot;
+import users.snapshots.RoleSnapshot;
+import users.snapshots.UserSnapshot;
 import users.vo.Credentials;
 import users.vo.Password;
 import java.util.ArrayList;
@@ -20,7 +20,8 @@ class User implements Aggregate<UUID, UserSnapshot> {
     private String mail;
     private final Set<Role> roles;
 
-    User(Credentials credentials, String mail, Set<Role> roles) {
+    User(UUID id, Credentials credentials, String mail, Set<Role> roles) {
+        this.id = id;
         this.credentials = credentials;
         this.mail = mail;
         this.roles = roles;
@@ -50,7 +51,7 @@ class User implements Aggregate<UUID, UserSnapshot> {
 
     private boolean isCandidateExpired(Password candidate) {
         final Password current = credentials.getPassword();
-        return candidate.isExpired() || !current.isBeforeExpired(candidate);
+        return candidate.isExpired() || current.expireBefore(candidate);
     }
 
     private List<UserEvent> processAddingRole(Role role) {
@@ -81,6 +82,6 @@ class User implements Aggregate<UUID, UserSnapshot> {
     @Override
     public UserSnapshot getSnapshot() {
         final Set<RoleSnapshot> rolesSnapshot = roles.stream().map(Role::getSnapshot).collect(Collectors.toUnmodifiableSet());
-        return new UserSnapshot(id, mail, new Credentials(credentials), rolesSnapshot);
+        return new UserSnapshot(id, mail, Credentials.ofCredentials(credentials), rolesSnapshot);
     }
 }
