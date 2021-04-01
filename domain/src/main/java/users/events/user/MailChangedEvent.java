@@ -1,6 +1,6 @@
 package users.events.user;
 
-import users.snapshot.UserSnapshot;
+import users.snapshots.UserSnapshot;
 
 public class MailChangedEvent extends UserEvent {
 

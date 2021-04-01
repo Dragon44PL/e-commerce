@@ -1,6 +1,7 @@
 package users.events.role;
 
-import users.snapshot.RoleSnapshot;
+import users.snapshots.RoleSnapshot;
+
 import java.time.Instant;
 
 public class RoleEvent {

@@ -1,7 +1,8 @@
 package users.events.user;
 
 import domain.events.DomainEvent;
-import users.snapshot.UserSnapshot;
+import users.snapshots.UserSnapshot;
+
 import java.time.Instant;
 
 public class UserEvent implements DomainEvent {

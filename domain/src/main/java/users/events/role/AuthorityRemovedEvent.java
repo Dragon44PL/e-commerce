@@ -1,6 +1,6 @@
 package users.events.role;
 
-import users.snapshot.RoleSnapshot;
+import users.snapshots.RoleSnapshot;
 
 public class AuthorityRemovedEvent extends RoleEvent {
 
