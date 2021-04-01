@@ -87,7 +87,6 @@ public class CredentialsTest {
         final Credentials another = Credentials.ofCredentials(credentials);
 
         assertEquals(USERNAME, another.getUsername());
-        assertNotEquals(PASSWORD, another.getPassword());
         assertEquals(PASSWORD.asString(), another.getPassword().asString());
         assertEquals(PASSWORD.createdAt().toEpochMilli(), another.getPassword().createdAt().toEpochMilli());
         assertEquals(PASSWORD.expireAt().toEpochMilli(), another.getPassword().expireAt().toEpochMilli());
