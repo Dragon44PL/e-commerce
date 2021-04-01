@@ -16,14 +16,14 @@ public class Password {
         this(password, Instant.ofEpochMilli(Long.MAX_VALUE));
     }
 
-    public Password(Password password) {
-        this(password.asString().toCharArray(), Instant.from(password.createdAt()), Instant.from(password.expireAt()));
-    }
-
     private Password(char[] password, Instant createdAt, Instant expireAt) {
         this.password = password;
         this.createdAt = createdAt;
         this.expireAt = expireAt;
+    }
+
+    public static Password ofAnother(Password password) {
+        return new Password(password.asString().toCharArray(), Instant.from(password.createdAt()), Instant.from(password.expireAt()));
     }
 
     public boolean isExpired() {
@@ -36,8 +36,8 @@ public class Password {
         return current.equals(check);
     }
 
-    public boolean isBeforeExpired(Password another) {
-        return another.expireAt.isBefore(expireAt);
+    public boolean expireBefore(Password another) {
+        return expireAt.isBefore(another.expireAt);
     }
 
     public String asString() {
@@ -45,10 +45,10 @@ public class Password {
     }
 
     public Instant createdAt() {
-        return Instant.from(createdAt);
+        return Instant.ofEpochMilli(createdAt.toEpochMilli());
     }
 
     public Instant expireAt() {
-        return Instant.from(expireAt);
+        return Instant.ofEpochMilli(expireAt.toEpochMilli());
     }
 }

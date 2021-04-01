@@ -9,8 +9,8 @@ public class Credentials {
         this.password = password;
     }
 
-    public Credentials(Credentials credentials) {
-        this(credentials.getUsername(), credentials.getPassword());
+    public static Credentials ofCredentials(Credentials credentials) {
+        return new Credentials(credentials.getUsername(), credentials.getPassword());
     }
 
     public Credentials changePassword(Password candidate) {
@@ -26,6 +26,6 @@ public class Credentials {
     }
 
     public Password getPassword() {
-        return new Password(password);
+        return Password.ofAnother(password);
     }
 }
