@@ -1,5 +1,3 @@
 package domain;
 
-public interface EntitySnapshot<I> {
-    I getId();
-}
+public interface EntitySnapshot<I> { }

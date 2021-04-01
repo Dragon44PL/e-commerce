@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CredentialsTest {
+class CredentialsTest {
 
     private static final String USERNAME = "USERNAME";
     private static final String PASSWORD_VALUE = "PASSWORD";
