@@ -4,4 +4,4 @@ import domain.EntitySnapshot;
 
 import java.util.UUID;
 
-public record AuthoritySnapshot(UUID id, String name) implements EntitySnapshot<UUID> { }
+public record AuthoritySnapshot(UUID id, String name) implements EntitySnapshot { }
