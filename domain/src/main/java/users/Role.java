@@ -3,10 +3,8 @@ package users;
 import domain.Aggregate;
 import users.events.role.AuthorityAddedEvent;
 import users.events.role.AuthorityRemovedEvent;
-import users.events.role.RoleEvent;
 import users.snapshots.AuthoritySnapshot;
 import users.snapshots.RoleSnapshot;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,31 +21,33 @@ class Role implements Aggregate<UUID, RoleSnapshot> {
     }
 
     boolean hasAuthority(Authority authority) {
-        return authorities.contains(authority);
+        return authorities.contains(authority) || authorities.stream().anyMatch((current) -> current.hasSameId(authority));
     }
 
-    List<RoleEvent> addAuthority(Authority authority) {
-        return (!hasAuthority(authority)) ? processAddingAuthority(authority) : new ArrayList<>();
+    Optional<AuthorityAddedEvent> addAuthority(Authority authority) {
+        return (!hasAuthority(authority)) ? processAddingAuthority(authority) : Optional.empty();
     }
 
-    private List<RoleEvent> processAddingAuthority(Authority authority) {
+    private Optional<AuthorityAddedEvent> processAddingAuthority(Authority authority) {
         this.authorities.add(authority);
-        return this.<AuthorityAddedEvent>processEventCreation();
-    }
-
-    List<RoleEvent> removeAuthority(Authority authority) {
-        return (hasAuthority(authority)) ? processRemovingAuthority(authority) : new ArrayList<>();
-    }
-
-    private List<RoleEvent> processRemovingAuthority(Authority authority) {
-        this.authorities.remove(authority);
-        return this.<AuthorityRemovedEvent>processEventCreation();
-    }
-
-    private <T extends RoleEvent> List<RoleEvent> processEventCreation() {
         final RoleSnapshot roleSnapshot = this.getSnapshot();
-        final RoleEvent roleEvent = T.ofRoleSnapshot(roleSnapshot);
-        return List.of(roleEvent);
+        final AuthorityAddedEvent authorityAddedEvent = new AuthorityAddedEvent(roleSnapshot);
+        return Optional.of(authorityAddedEvent);
+    }
+
+    Optional<AuthorityRemovedEvent> removeAuthority(Authority authority) {
+        return (hasAuthority(authority)) ? processRemovingAuthority(authority) : Optional.empty();
+    }
+
+    private Optional<AuthorityRemovedEvent> processRemovingAuthority(Authority authority) {
+        this.authorities.removeIf((current) -> current.hasSameId(authority));
+        final RoleSnapshot roleSnapshot = this.getSnapshot();
+        final AuthorityRemovedEvent authorityRemovedEvent = new AuthorityRemovedEvent(roleSnapshot);
+        return Optional.of(authorityRemovedEvent);
+    }
+
+    boolean hasSameId(Role role) {
+        return id.compareTo(role.id) == 0;
     }
 
     @Override

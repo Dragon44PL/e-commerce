@@ -2,20 +2,17 @@ package users;
 
 import domain.Aggregate;
 import users.events.user.*;
-import users.exception.CredentialsExpiredException;
+import users.exception.PasswordExpiredException;
 import users.snapshots.RoleSnapshot;
 import users.snapshots.UserSnapshot;
 import users.vo.Credentials;
 import users.vo.Password;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 class User implements Aggregate<UUID, UserSnapshot> {
 
-    private UUID id;
+    private final UUID id;
     private Credentials credentials;
     private String mail;
     private final Set<Role> roles;
@@ -24,7 +21,7 @@ class User implements Aggregate<UUID, UserSnapshot> {
         this.id = id;
         this.credentials = credentials;
         this.mail = mail;
-        this.roles = roles;
+        this.roles = new HashSet<>(roles);
     }
 
     boolean hasAuthority(Authority authority) {
@@ -32,56 +29,57 @@ class User implements Aggregate<UUID, UserSnapshot> {
     }
 
     boolean hasRole(Role role) {
-        return roles.contains(role);
+        return roles.contains(role) || roles.stream().anyMatch(current -> current.hasSameId(role));
     }
 
-    List<UserEvent> addRole(Role role) {
-        return (!hasRole(role)) ? processAddingRole(role) : new ArrayList<>();
+    Optional<RoleAddedEvent> addRole(Role role) {
+        return (!hasRole(role)) ? processAddingRole(role) : Optional.empty();
     }
 
-    List<UserEvent> changePassword(Password candidate) throws CredentialsExpiredException {
+    Optional<PasswordChangedEvent> changePassword(Password candidate) throws PasswordExpiredException {
 
         if(isCandidateExpired(candidate)) {
-            throw new CredentialsExpiredException();
+            throw new PasswordExpiredException();
         }
 
         credentials = credentials.changePassword(candidate);
-        return this.<PasswordChangedEvent>processEventCreation();
+        final UserSnapshot userSnapshot = this.getSnapshot();
+        final PasswordChangedEvent passwordChangedEvent = new PasswordChangedEvent(userSnapshot);
+        return Optional.of(passwordChangedEvent);
     }
 
     private boolean isCandidateExpired(Password candidate) {
         final Password current = credentials.getPassword();
-        return candidate.isExpired() || current.expireBefore(candidate);
+        return (candidate.isExpired()) || (current.expireBefore(candidate) && current.isExpired());
     }
 
-    private List<UserEvent> processAddingRole(Role role) {
+    private Optional<RoleAddedEvent> processAddingRole(Role role) {
         roles.add(role);
-        return this.<RoleAddedEvent>processEventCreation();
-    }
-
-    List<UserEvent> removeRole(Role role) {
-        return (hasRole(role)) ? processRemovingRole(role) : new ArrayList<>();
-    }
-
-    private List<UserEvent> processRemovingRole(Role role) {
-        roles.remove(role);
-        return this.<RoleRemovedEvent>processEventCreation();
-    }
-
-    List<UserEvent> changeEmail(String mail) {
-        this.mail = mail;
-        return this.<MailChangedEvent>processEventCreation();
-    }
-
-    private <T extends UserEvent> List<UserEvent> processEventCreation() {
         final UserSnapshot userSnapshot = this.getSnapshot();
-        final UserEvent userEvent = T.ofUserSnapshot(userSnapshot);
-        return List.of(userEvent);
+        final RoleAddedEvent roleAddedEvent = new RoleAddedEvent(userSnapshot);
+        return Optional.of(roleAddedEvent);
+    }
+
+    Optional<RoleRemovedEvent> removeRole(Role role) {
+        return (hasRole(role)) ? processRemovingRole(role) : Optional.empty();
+    }
+
+    private Optional<RoleRemovedEvent> processRemovingRole(Role role) {
+        roles.removeIf((current) -> current.hasSameId(role));
+        final UserSnapshot userSnapshot = this.getSnapshot();
+        final RoleRemovedEvent roleRemovedEvent = new RoleRemovedEvent(userSnapshot);
+        return Optional.of(roleRemovedEvent);
+    }
+
+    Optional<MailChangedEvent> changeEmail(String mail) {
+        this.mail = mail;
+        final UserSnapshot userSnapshot = this.getSnapshot();
+        return Optional.of(new MailChangedEvent(userSnapshot));
     }
 
     @Override
     public UserSnapshot getSnapshot() {
         final Set<RoleSnapshot> rolesSnapshot = roles.stream().map(Role::getSnapshot).collect(Collectors.toUnmodifiableSet());
-        return new UserSnapshot(id, mail, Credentials.ofCredentials(credentials), rolesSnapshot);
+        return new UserSnapshot(id, mail, credentials, rolesSnapshot);
     }
 }

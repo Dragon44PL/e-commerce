@@ -45,10 +45,10 @@ public class Password {
     }
 
     public Instant createdAt() {
-        return Instant.ofEpochMilli(createdAt.toEpochMilli());
+        return createdAt;
     }
 
     public Instant expireAt() {
-        return Instant.ofEpochMilli(expireAt.toEpochMilli());
+        return expireAt;
     }
 }

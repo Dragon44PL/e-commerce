@@ -15,6 +15,10 @@ class Authority implements Aggregate<UUID, AuthoritySnapshot> {
         this.name = name;
     }
 
+    boolean hasSameId(Authority authority) {
+        return id.compareTo(authority.id) == 0;
+    }
+
     @Override
     public AuthoritySnapshot getSnapshot() {
         return new AuthoritySnapshot(id, name);
