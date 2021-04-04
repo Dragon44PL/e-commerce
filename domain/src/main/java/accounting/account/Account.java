@@ -1,24 +1,24 @@
-package accounting.users;
+package accounting.account;
 
-import accounting.users.events.MailChangedEvent;
-import accounting.users.events.PasswordChangedEvent;
-import accounting.users.events.RoleAddedEvent;
-import accounting.users.events.RoleRemovedEvent;
-import accounting.users.vo.RoleId;
+import accounting.account.events.MailChangedEvent;
+import accounting.account.events.PasswordChangedEvent;
+import accounting.account.events.RoleAddedEvent;
+import accounting.account.events.RoleRemovedEvent;
+import accounting.account.vo.RoleId;
 import domain.Aggregate;
-import accounting.users.exception.PasswordExpiredException;
-import accounting.users.vo.Credentials;
-import accounting.users.vo.Password;
+import accounting.account.exception.PasswordExpiredException;
+import accounting.account.vo.Credentials;
+import accounting.account.vo.Password;
 import java.util.*;
 
-class User implements Aggregate<UUID, UserSnapshot> {
+class Account implements Aggregate<UUID, AccountSnapshot> {
 
     private final UUID id;
     private Credentials credentials;
     private String mail;
     private final Set<RoleId> roles;
 
-    User(UUID id, Credentials credentials, String mail, Set<RoleId> roles) {
+    Account(UUID id, Credentials credentials, String mail, Set<RoleId> roles) {
         this.id = id;
         this.credentials = credentials;
         this.mail = mail;
@@ -40,8 +40,8 @@ class User implements Aggregate<UUID, UserSnapshot> {
         }
 
         credentials = credentials.changePassword(candidate);
-        final UserSnapshot userSnapshot = this.getSnapshot();
-        final PasswordChangedEvent passwordChangedEvent = new PasswordChangedEvent(userSnapshot);
+        final AccountSnapshot accountSnapshot = this.getSnapshot();
+        final PasswordChangedEvent passwordChangedEvent = new PasswordChangedEvent(accountSnapshot);
         return Optional.of(passwordChangedEvent);
     }
 
@@ -52,8 +52,8 @@ class User implements Aggregate<UUID, UserSnapshot> {
 
     private Optional<RoleAddedEvent> processAddingRole(RoleId role) {
         roles.add(role);
-        final UserSnapshot userSnapshot = this.getSnapshot();
-        final RoleAddedEvent roleAddedEvent = new RoleAddedEvent(userSnapshot);
+        final AccountSnapshot accountSnapshot = this.getSnapshot();
+        final RoleAddedEvent roleAddedEvent = new RoleAddedEvent(accountSnapshot);
         return Optional.of(roleAddedEvent);
     }
 
@@ -63,20 +63,20 @@ class User implements Aggregate<UUID, UserSnapshot> {
 
     private Optional<RoleRemovedEvent> processRemovingRole(RoleId role) {
         roles.removeIf((current) -> current.id().compareTo(role.id()) == 0);
-        final UserSnapshot userSnapshot = this.getSnapshot();
-        final RoleRemovedEvent roleRemovedEvent = new RoleRemovedEvent(userSnapshot);
+        final AccountSnapshot accountSnapshot = this.getSnapshot();
+        final RoleRemovedEvent roleRemovedEvent = new RoleRemovedEvent(accountSnapshot);
         return Optional.of(roleRemovedEvent);
     }
 
     Optional<MailChangedEvent> changeEmail(String mail) {
         this.mail = mail;
-        final UserSnapshot userSnapshot = this.getSnapshot();
-        return Optional.of(new MailChangedEvent(userSnapshot));
+        final AccountSnapshot accountSnapshot = this.getSnapshot();
+        return Optional.of(new MailChangedEvent(accountSnapshot));
     }
 
     @Override
-    public UserSnapshot getSnapshot() {
+    public AccountSnapshot getSnapshot() {
         final Set<RoleId> currentRoles = new HashSet<>(roles);
-        return new UserSnapshot(id, mail, credentials, currentRoles);
+        return new AccountSnapshot(id, mail, credentials, currentRoles);
     }
 }

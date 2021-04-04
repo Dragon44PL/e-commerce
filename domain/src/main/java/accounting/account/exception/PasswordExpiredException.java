@@ -1,4 +1,4 @@
-package accounting.users.exception;
+package accounting.account.exception;
 
 public class PasswordExpiredException extends RuntimeException {
 

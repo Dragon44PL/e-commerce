@@ -1,4 +1,4 @@
-package accounting.users.vo;
+package accounting.account.vo;
 
 import java.time.Instant;
 

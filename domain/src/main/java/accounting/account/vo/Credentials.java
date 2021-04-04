@@ -1,4 +1,4 @@
-package accounting.users.vo;
+package accounting.account.vo;
 
 public class Credentials {
     private final String username;

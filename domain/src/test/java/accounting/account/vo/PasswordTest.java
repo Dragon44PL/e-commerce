@@ -1,4 +1,4 @@
-package accounting.users.vo;
+package accounting.account.vo;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
