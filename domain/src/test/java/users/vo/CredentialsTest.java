@@ -9,15 +9,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CredentialsTest {
 
-    private static final String USERNAME = "USERNAME";
-    private static final String PASSWORD_VALUE = "PASSWORD";
-    private static final Instant EXPIRES_AT = Instant.now();
-    private static final Password PASSWORD = new Password(PASSWORD_VALUE, EXPIRES_AT);
+    private final String USERNAME = "USERNAME";
+    private final String PASSWORD_VALUE = "PASSWORD";
+    private final Instant EXPIRES_AT = Instant.now();
+    private final Password PASSWORD = new Password(PASSWORD_VALUE, EXPIRES_AT);
 
-    private static final String CHANGED_USERNAME = "CHANGED_USERNAME";
-    private static final String CHANGED_PASSWORD_VALUE = "CHANGED_PASSWORD";
-    private static final Instant CHANGED_EXPIRES_AT = Instant.now().plus(60, ChronoUnit.SECONDS);
-    private static final Password CHANGED_PASSWORD = new Password(CHANGED_PASSWORD_VALUE, CHANGED_EXPIRES_AT);
+    private final String CHANGED_USERNAME = "CHANGED_USERNAME";
+    private final String CHANGED_PASSWORD_VALUE = "CHANGED_PASSWORD";
+    private final Instant CHANGED_EXPIRES_AT = Instant.now().plus(60, ChronoUnit.SECONDS);
+    private final Password CHANGED_PASSWORD = new Password(CHANGED_PASSWORD_VALUE, CHANGED_EXPIRES_AT);
 
     @Test
     @DisplayName("Credentials Username Value Should Be The Same")
@@ -91,6 +91,4 @@ class CredentialsTest {
         assertEquals(PASSWORD.createdAt().toEpochMilli(), another.getPassword().createdAt().toEpochMilli());
         assertEquals(PASSWORD.expireAt().toEpochMilli(), another.getPassword().expireAt().toEpochMilli());
     }
-
-
 }

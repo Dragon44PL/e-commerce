@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordTest {
 
-    private static final String PASSWORD = "PASSWORD";
-    private static final Instant EXPIRED_AT = Instant.now();
+    private final String PASSWORD = "PASSWORD";
+    private final Instant EXPIRED_AT = Instant.now();
 
     @Test
     @DisplayName("Password Should Not Be Expired")
@@ -62,8 +62,8 @@ class PasswordTest {
         final Password password = new Password(PASSWORD, EXPIRED_AT);
         final Password copy = Password.ofAnother(password);
         assertNotSame(copy.asString(), password.asString());
-        assertNotSame(copy.createdAt(), password.createdAt());
-        assertNotSame(copy.expireAt(), password.expireAt());
+        assertEquals(copy.createdAt().compareTo(password.createdAt()), 0);
+        assertEquals(copy.expireAt().compareTo(password.expireAt()), 0);
     }
 
     @Test
@@ -72,7 +72,4 @@ class PasswordTest {
         final Password password = new Password(PASSWORD);
         assertEquals(Long.MAX_VALUE, password.expireAt().toEpochMilli());
     }
-
-
-
 }
