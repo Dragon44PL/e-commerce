@@ -1,9 +1,6 @@
 package accounting.account;
 
-import accounting.account.events.MailChangedEvent;
-import accounting.account.events.PasswordChangedEvent;
-import accounting.account.events.RoleAddedEvent;
-import accounting.account.events.RoleRemovedEvent;
+import accounting.account.events.*;
 import accounting.account.vo.RoleId;
 import domain.Aggregate;
 import accounting.account.exception.PasswordExpiredException;
@@ -41,7 +38,7 @@ class Account implements Aggregate<UUID, AccountSnapshot> {
 
         credentials = credentials.changePassword(candidate);
         final AccountSnapshot accountSnapshot = this.getSnapshot();
-        final PasswordChangedEvent passwordChangedEvent = new PasswordChangedEvent(accountSnapshot);
+        final PasswordChangedEvent passwordChangedEvent = new PasswordChangedEvent(id, candidate);
         return Optional.of(passwordChangedEvent);
     }
 
@@ -50,10 +47,17 @@ class Account implements Aggregate<UUID, AccountSnapshot> {
         return (candidate.isExpired()) || (current.expireBefore(candidate) && current.isExpired());
     }
 
+    Optional<UsernameChangedEvent> changeUsername(String username) {
+        credentials = credentials.changeUsername(username);
+        final AccountSnapshot accountSnapshot = this.getSnapshot();
+        final UsernameChangedEvent usernameChangedEvent = new UsernameChangedEvent(id, username);
+        return Optional.of(usernameChangedEvent);
+    }
+
     private Optional<RoleAddedEvent> processAddingRole(RoleId role) {
         roles.add(role);
         final AccountSnapshot accountSnapshot = this.getSnapshot();
-        final RoleAddedEvent roleAddedEvent = new RoleAddedEvent(accountSnapshot);
+        final RoleAddedEvent roleAddedEvent = new RoleAddedEvent(id, role);
         return Optional.of(roleAddedEvent);
     }
 
@@ -64,14 +68,14 @@ class Account implements Aggregate<UUID, AccountSnapshot> {
     private Optional<RoleRemovedEvent> processRemovingRole(RoleId role) {
         roles.removeIf((current) -> current.id().compareTo(role.id()) == 0);
         final AccountSnapshot accountSnapshot = this.getSnapshot();
-        final RoleRemovedEvent roleRemovedEvent = new RoleRemovedEvent(accountSnapshot);
+        final RoleRemovedEvent roleRemovedEvent = new RoleRemovedEvent(id, role);
         return Optional.of(roleRemovedEvent);
     }
 
     Optional<MailChangedEvent> changeEmail(String mail) {
         this.mail = mail;
         final AccountSnapshot accountSnapshot = this.getSnapshot();
-        return Optional.of(new MailChangedEvent(accountSnapshot));
+        return Optional.of(new MailChangedEvent(id, mail));
     }
 
     @Override
