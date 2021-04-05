@@ -4,7 +4,6 @@ import accounting.role.vo.AuthorityId;
 import domain.Aggregate;
 import accounting.role.events.AuthorityAddedEvent;
 import accounting.role.events.AuthorityRemovedEvent;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,8 +29,7 @@ class Role implements Aggregate<UUID, RoleSnapshot> {
 
     private Optional<AuthorityAddedEvent> processAddingAuthority(AuthorityId authority) {
         this.authorities.add(authority);
-        final RoleSnapshot roleSnapshot = this.getSnapshot();
-        final AuthorityAddedEvent authorityAddedEvent = new AuthorityAddedEvent(roleSnapshot);
+        final AuthorityAddedEvent authorityAddedEvent = new AuthorityAddedEvent(id, authority);
         return Optional.of(authorityAddedEvent);
     }
 
@@ -41,8 +39,7 @@ class Role implements Aggregate<UUID, RoleSnapshot> {
 
     private Optional<AuthorityRemovedEvent> processRemovingAuthority(AuthorityId authority) {
         this.authorities.removeIf((current) -> current.id().compareTo(authority.id()) == 0);
-        final RoleSnapshot roleSnapshot = this.getSnapshot();
-        final AuthorityRemovedEvent authorityRemovedEvent = new AuthorityRemovedEvent(roleSnapshot);
+        final AuthorityRemovedEvent authorityRemovedEvent = new AuthorityRemovedEvent(id, authority);
         return Optional.of(authorityRemovedEvent);
     }
 

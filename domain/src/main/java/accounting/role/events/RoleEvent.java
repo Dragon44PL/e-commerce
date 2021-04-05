@@ -1,27 +1,24 @@
 package accounting.role.events;
 
-import accounting.role.RoleSnapshot;
-
+import domain.events.DomainEvent;
 import java.time.Instant;
+import java.util.UUID;
 
-public class RoleEvent {
+public class RoleEvent implements DomainEvent<UUID> {
     private final Instant instant;
-    private final RoleSnapshot role;
+    private final UUID roleId;
 
-    public RoleEvent(RoleSnapshot role) {
+    public RoleEvent(UUID roleId) {
         this.instant = Instant.now();
-        this.role = role;
+        this.roleId = roleId;
     }
 
-    public static RoleEvent ofRoleSnapshot(RoleSnapshot roleSnapshot) {
-        return new RoleEvent(roleSnapshot);
+    @Override
+    public UUID aggregateId() {
+        return roleId;
     }
 
     public Instant onInstant() {
         return instant;
-    }
-
-    public RoleSnapshot getRole() {
-        return role;
     }
 }

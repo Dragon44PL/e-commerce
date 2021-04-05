@@ -46,6 +46,8 @@ class RoleTest {
 
         assertTrue(event.isPresent());
         assertEquals(event.get().getClass(), AUTHORITY_ADDED_EVENT_CLAZZ);
+        assertEquals(event.get().aggregateId(), ROLE_ID);
+        assertEquals(event.get().getAuthority().id(), ANOTHER_AUTHORITY_ID);
         assertEquals(roleSnapshot.authorities().size(), 2);
     }
 
@@ -83,6 +85,8 @@ class RoleTest {
 
         assertTrue(removedEvent.isPresent());
         assertEquals(removedEvent.get().getClass(), AUTHORITY_REMOVED_EVENT_CLAZZ);
+        assertEquals(removedEvent.get().aggregateId(), ROLE_ID);
+        assertEquals(removedEvent.get().getAuthority().id(), ANOTHER_AUTHORITY_ID);
         assertEquals(roleSnapshot.authorities().size(), 1);
     }
 
