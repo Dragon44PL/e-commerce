@@ -1,10 +1,18 @@
 package accounting.account.events;
 
-import accounting.account.AccountSnapshot;
+import accounting.account.vo.RoleId;
+import java.util.UUID;
 
 public class RoleRemovedEvent extends AccountEvent {
 
-    public RoleRemovedEvent(AccountSnapshot user) {
-        super(user);
+    private final RoleId roleId;
+
+    public RoleRemovedEvent(UUID accountId, RoleId roleId) {
+        super(accountId);
+        this.roleId = roleId;
+    }
+
+    public RoleId getRole() {
+        return roleId;
     }
 }

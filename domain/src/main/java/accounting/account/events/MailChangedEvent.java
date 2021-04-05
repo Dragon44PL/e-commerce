@@ -1,10 +1,17 @@
 package accounting.account.events;
 
-import accounting.account.AccountSnapshot;
+import java.util.UUID;
 
 public class MailChangedEvent extends AccountEvent {
 
-    public MailChangedEvent(AccountSnapshot user) {
-        super(user);
+    public MailChangedEvent(UUID accountId, String mail) {
+        super(accountId);
+        this.mail = mail;
+    }
+
+    private final String mail;
+
+    public String getMail() {
+        return mail;
     }
 }

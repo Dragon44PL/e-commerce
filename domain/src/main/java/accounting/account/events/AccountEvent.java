@@ -1,28 +1,25 @@
 package accounting.account.events;
 
 import domain.events.DomainEvent;
-import accounting.account.AccountSnapshot;
-
 import java.time.Instant;
+import java.util.UUID;
 
-public class AccountEvent implements DomainEvent {
+public class AccountEvent implements DomainEvent<UUID> {
     private final Instant instant;
-    private final AccountSnapshot user;
+    private final UUID accountId;
 
-    public AccountEvent(AccountSnapshot user) {
+    public AccountEvent(UUID accountId) {
         this.instant = Instant.now();
-        this.user = user;
+        this.accountId = accountId;
     }
 
-    public static AccountEvent ofUserSnapshot(AccountSnapshot user) {
-        return new AccountEvent(user);
+    @Override
+    public UUID aggregateId() {
+        return accountId;
     }
 
+    @Override
     public Instant onInstant() {
         return instant;
-    }
-
-    public AccountSnapshot getUser() {
-        return user;
     }
 }
