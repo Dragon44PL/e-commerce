@@ -2,14 +2,13 @@ package categories.category;
 
 import categories.category.event.CategoryCreatedEvent;
 import categories.category.event.CategoryEvent;
-import categories.category.event.TopCategoryChangedEvent;
+import categories.category.event.ParentCategoryChangedEvent;
 import categories.category.exception.ParentCategoryIdException;
 import categories.category.vo.CategoryId;
 import categories.category.vo.CategorySnapshot;
 import domain.Aggregate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 class Category implements Aggregate<UUID, CategorySnapshot> {
@@ -23,6 +22,10 @@ class Category implements Aggregate<UUID, CategorySnapshot> {
         final Category category = new Category(id, name, topCategory, new ArrayList<>());
         category.registerEvent(new CategoryCreatedEvent(id, name, topCategory));
         return category;
+    }
+
+    static Category create(UUID id, String name) {
+        return Category.create(id, name, null);
     }
 
     private Category(UUID id, String name, CategoryId parentCategory, List<CategoryEvent> categoryEvents) {
@@ -40,14 +43,17 @@ class Category implements Aggregate<UUID, CategorySnapshot> {
         return id.compareTo(topCategory.id()) == 0;
     }
 
-    Optional<TopCategoryChangedEvent> changeParentCategory(CategoryId topCategory) throws ParentCategoryIdException {
+    boolean hasCategoryParent() {
+        return parentCategory != null;
+    }
+
+    void changeParentCategory(CategoryId topCategory) throws ParentCategoryIdException {
         if(sameCategory(topCategory)) {
             throw new ParentCategoryIdException();
         }
 
         this.parentCategory = topCategory;
-        final TopCategoryChangedEvent topCategoryChangedEvent = new TopCategoryChangedEvent(id, topCategory);
-        return Optional.of(topCategoryChangedEvent);
+        registerEvent(new ParentCategoryChangedEvent(id, topCategory));
     }
 
     @Override
