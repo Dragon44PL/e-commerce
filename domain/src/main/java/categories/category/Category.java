@@ -6,17 +6,16 @@ import categories.category.event.ParentCategoryChangedEvent;
 import categories.category.exception.ParentCategoryIdException;
 import categories.category.vo.CategoryId;
 import categories.category.vo.CategorySnapshot;
-import domain.Aggregate;
+import domain.AggregateRoot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class Category implements Aggregate<UUID, CategorySnapshot> {
+class Category extends AggregateRoot<UUID, CategorySnapshot, CategoryEvent> {
 
     private final UUID id;
     private final String name;
     private CategoryId parentCategory;
-    private final List<CategoryEvent> categoryEvents;
 
     static Category create(UUID id, String name, CategoryId topCategory) {
         final Category category = new Category(id, name, topCategory, new ArrayList<>());
@@ -29,14 +28,10 @@ class Category implements Aggregate<UUID, CategorySnapshot> {
     }
 
     private Category(UUID id, String name, CategoryId parentCategory, List<CategoryEvent> categoryEvents) {
+        super(categoryEvents);
         this.id = id;
         this.name = name;
         this.parentCategory = parentCategory;
-        this.categoryEvents = categoryEvents;
-    }
-
-    private void registerEvent(CategoryEvent categoryEvent) {
-        categoryEvents.add(categoryEvent);
     }
 
     boolean sameCategory(CategoryId topCategory) {
@@ -58,6 +53,6 @@ class Category implements Aggregate<UUID, CategorySnapshot> {
 
     @Override
     public CategorySnapshot getSnapshot() {
-        return new CategorySnapshot(id, name, parentCategory, categoryEvents);
+        return new CategorySnapshot(id, name, parentCategory, new ArrayList<>(events()));
     }
 }
