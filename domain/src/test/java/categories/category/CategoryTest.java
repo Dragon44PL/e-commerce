@@ -122,4 +122,19 @@ class CategoryTest {
         final List<CategoryEvent> originalCategoryEvents = category.getSnapshot().events();
         assertNotEquals(modifiedCategoryEvents.size(), originalCategoryEvents.size());
     }
+
+    @Test
+    @DisplayName("Restoring Category Should Create Account With Values From Category Snapshot")
+    void restoringShouldCreateCategoryWithValuesFromSnapshot() {
+        final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
+        final CategorySnapshot categorySnapshot = category.getSnapshot();
+
+        final Category anotherCategory = Category.restore(categorySnapshot);
+        final CategorySnapshot anotherCategorySnapshot = anotherCategory.getSnapshot();
+
+        assertEquals(categorySnapshot.id(), anotherCategorySnapshot.id());
+        assertEquals(categorySnapshot.name(), anotherCategorySnapshot.name());
+        assertEquals(categorySnapshot.parentCategory(), anotherCategorySnapshot.parentCategory());
+        assertNotEquals(categorySnapshot.events().size(), anotherCategorySnapshot.events().size());
+    }
 }

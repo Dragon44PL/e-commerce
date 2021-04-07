@@ -151,4 +151,19 @@ class RoleTest {
         final List<RoleEvent> originalRoleEvents = role.getSnapshot().events();
         assertNotEquals(modifiedRoleEvents.size(), originalRoleEvents.size());
     }
+
+    @Test
+    @DisplayName("Restoring Role Should Create Account With Values From Role Snapshot")
+    void restoringShouldCreateRoleWithValuesFromSnapshot() {
+        final Role role = Role.create(ROLE_ID, ROLE_NAME, AUTHORITIES);
+        final RoleSnapshot roleSnapshot = role.getSnapshot();
+
+        final Role anotherRole = Role.restore(roleSnapshot);
+        final RoleSnapshot anotherRoleSnapshot = anotherRole.getSnapshot();
+
+        assertEquals(roleSnapshot.id(), anotherRoleSnapshot.id());
+        assertEquals(roleSnapshot.name(), anotherRoleSnapshot.name());
+        assertEquals(roleSnapshot.authorities(), anotherRoleSnapshot.authorities());
+        assertNotEquals(roleSnapshot.events().size(), anotherRoleSnapshot.events().size());
+    }
 }

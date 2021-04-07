@@ -232,4 +232,21 @@ class AccountTest {
         final List<AccountEvent> originalAccountEvents = account.getSnapshot().events();
         assertNotEquals(modifiedAccountEvents.size(), originalAccountEvents.size());
     }
+
+    @Test
+    @DisplayName("Restoring Account Should Create Account With Values From Account Snapshot")
+    void restoringShouldCreateAccountWithValuesFromSnapshot() {
+        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final AccountSnapshot accountSnapshot = account.getSnapshot();
+
+        final Account anotherAccount = Account.restore(accountSnapshot);
+        final AccountSnapshot anotherAccountSnapshot = anotherAccount.getSnapshot();
+
+        assertEquals(accountSnapshot.id(), anotherAccountSnapshot.id());
+        assertEquals(accountSnapshot.credentials(), anotherAccountSnapshot.credentials());
+        assertEquals(accountSnapshot.mail(), anotherAccountSnapshot.mail());
+        assertEquals(accountSnapshot.roles(), anotherAccountSnapshot.roles());
+        assertNotEquals(accountSnapshot.events().size(), anotherAccountSnapshot.events().size());
+    }
+
 }

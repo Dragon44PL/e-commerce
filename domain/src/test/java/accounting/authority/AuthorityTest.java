@@ -57,4 +57,18 @@ class AuthorityTest {
         final List<AuthorityEvent> originalAuthorityEvents = authority.getSnapshot().events();
         assertNotEquals(modifiedAuthorityEvents.size(), originalAuthorityEvents.size());
     }
+
+    @Test
+    @DisplayName("Restoring Authority Should Create Account With Values From Authority Snapshot")
+    void restoringShouldCreateAuthorityWithValuesFromSnapshot() {
+        final Authority authority = Authority.create(DEFAULT_ID, DEFAULT_NAME);
+        final AuthoritySnapshot authoritySnapshot = authority.getSnapshot();
+
+        final Authority anotherAuthority = Authority.restore(authoritySnapshot);
+        final AuthoritySnapshot anotherAuthoritySnapshot = anotherAuthority.getSnapshot();
+
+        assertEquals(authoritySnapshot.id(), anotherAuthoritySnapshot.id());
+        assertEquals(authoritySnapshot.name(), anotherAuthoritySnapshot.name());
+        assertNotEquals(authoritySnapshot.events().size(), anotherAuthoritySnapshot.events().size());
+    }
 }
