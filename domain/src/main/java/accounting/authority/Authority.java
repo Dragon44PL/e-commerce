@@ -19,6 +19,10 @@ class Authority extends AggregateRoot<UUID, AuthoritySnapshot, AuthorityEvent> {
         return authority;
     }
 
+    static Authority restore(AuthoritySnapshot authoritySnapshot) {
+        return new Authority(authoritySnapshot.id(), authoritySnapshot.name(), new ArrayList<>());
+    }
+
     private Authority(UUID id, String name, List<AuthorityEvent> authorityEvents) {
         super(authorityEvents);
         this.id = id;

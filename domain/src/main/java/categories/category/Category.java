@@ -27,6 +27,10 @@ class Category extends AggregateRoot<UUID, CategorySnapshot, CategoryEvent> {
         return Category.create(id, name, null);
     }
 
+    static Category restore(CategorySnapshot categorySnapshot) {
+        return new Category(categorySnapshot.id(), categorySnapshot.name(), categorySnapshot.parentCategory(), new ArrayList<>());
+    }
+
     private Category(UUID id, String name, CategoryId parentCategory, List<CategoryEvent> categoryEvents) {
         super(categoryEvents);
         this.id = id;

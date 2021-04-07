@@ -22,6 +22,10 @@ class Role extends AggregateRoot<UUID, RoleSnapshot, RoleEvent> {
         return role;
     }
 
+    static Role restore(RoleSnapshot roleSnapshot) {
+        return new Role(roleSnapshot.id(), roleSnapshot.name(), roleSnapshot.authorities(), new ArrayList<>());
+    }
+
     private Role(UUID id, String name, Set<AuthorityId> authorities, List<RoleEvent> roleEvents) {
         super(roleEvents);
         this.id = id;

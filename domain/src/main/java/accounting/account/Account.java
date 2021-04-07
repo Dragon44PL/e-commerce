@@ -25,6 +25,10 @@ class Account extends AggregateRoot<UUID, AccountSnapshot, AccountEvent> {
         return account;
     }
 
+    static Account restore(AccountSnapshot accountSnapshot) {
+        return new Account(accountSnapshot.id(), accountSnapshot.credentials(), accountSnapshot.mail(), accountSnapshot.roles(), new ArrayList<>());
+    }
+
     private Account(UUID id, Credentials credentials, String mail, Set<RoleId> roles, List<AccountEvent> accountEvents) {
         super(accountEvents);
         this.id = id;
