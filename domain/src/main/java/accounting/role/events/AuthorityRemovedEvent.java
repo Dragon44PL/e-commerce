@@ -1,18 +1,12 @@
 package accounting.role.events;
 
 import accounting.role.vo.AuthorityId;
+import java.time.Instant;
 import java.util.UUID;
 
-public class AuthorityRemovedEvent extends RoleEvent {
+public record AuthorityRemovedEvent(Instant occurredOn, UUID aggregateId, AuthorityId authority) implements RoleEvent {
 
-    private final AuthorityId authorityId;
-
-    public AuthorityRemovedEvent(UUID roleId, AuthorityId authorityId) {
-        super(roleId);
-        this.authorityId = authorityId;
-    }
-
-    public AuthorityId getAuthority() {
-        return authorityId;
+    public AuthorityRemovedEvent(UUID roleId, AuthorityId authority) {
+        this(Instant.now(), roleId, authority);
     }
 }

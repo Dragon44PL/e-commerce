@@ -1,18 +1,12 @@
 package categories.category.event;
 
 import categories.category.vo.CategoryId;
+import java.time.Instant;
 import java.util.UUID;
 
-public class ParentCategoryChangedEvent extends CategoryEvent {
-
-    private final CategoryId parentCategory;
+public record ParentCategoryChangedEvent(Instant occurredOn, UUID aggregateId, CategoryId parentCategory) implements CategoryEvent {
 
     public ParentCategoryChangedEvent(UUID categoryId, CategoryId parentCategory) {
-        super(categoryId);
-        this.parentCategory = parentCategory;
-    }
-
-    public CategoryId getParentCategory() {
-        return parentCategory;
+        this(Instant.now(), categoryId, parentCategory);
     }
 }

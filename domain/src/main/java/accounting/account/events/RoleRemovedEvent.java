@@ -1,18 +1,12 @@
 package accounting.account.events;
 
 import accounting.account.vo.RoleId;
+import java.time.Instant;
 import java.util.UUID;
 
-public class RoleRemovedEvent extends AccountEvent {
+public record RoleRemovedEvent(Instant occurredOn, UUID aggregateId, RoleId role) implements AccountEvent {
 
-    private final RoleId roleId;
-
-    public RoleRemovedEvent(UUID accountId, RoleId roleId) {
-        super(accountId);
-        this.roleId = roleId;
-    }
-
-    public RoleId getRole() {
-        return roleId;
+    public RoleRemovedEvent(UUID accountId, RoleId role) {
+        this(Instant.now(), accountId, role);
     }
 }

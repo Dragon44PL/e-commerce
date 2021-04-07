@@ -1,17 +1,11 @@
 package accounting.account.events;
 
+import java.time.Instant;
 import java.util.UUID;
 
-public class MailChangedEvent extends AccountEvent {
+public record MailChangedEvent(Instant occurredOn, UUID aggregateId, String mail) implements AccountEvent {
 
     public MailChangedEvent(UUID accountId, String mail) {
-        super(accountId);
-        this.mail = mail;
-    }
-
-    private final String mail;
-
-    public String getMail() {
-        return mail;
+        this(Instant.now(), accountId, mail);
     }
 }

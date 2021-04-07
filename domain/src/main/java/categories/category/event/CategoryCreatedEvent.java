@@ -1,25 +1,12 @@
 package categories.category.event;
 
 import categories.category.vo.CategoryId;
+import java.time.Instant;
 import java.util.UUID;
 
-public class CategoryCreatedEvent extends CategoryEvent {
+public record CategoryCreatedEvent(Instant occurredOn, UUID aggregateId, String name, CategoryId parentCategory) implements CategoryEvent {
 
-    private final String name;
-    private final CategoryId categoryId;
-
-    public CategoryCreatedEvent(UUID categoryId, String name, CategoryId categoryId1) {
-        super(categoryId);
-        this.name = name;
-        this.categoryId = categoryId1;
+    public CategoryCreatedEvent(UUID categoryId, String name, CategoryId parentCategory) {
+        this(Instant.now(), categoryId, name, parentCategory);
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public CategoryId getCategory() {
-        return categoryId;
-    }
-
 }

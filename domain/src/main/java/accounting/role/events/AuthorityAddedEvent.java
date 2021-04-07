@@ -1,18 +1,12 @@
 package accounting.role.events;
 
 import accounting.role.vo.AuthorityId;
+import java.time.Instant;
 import java.util.UUID;
 
-public class AuthorityAddedEvent extends RoleEvent{
+public record AuthorityAddedEvent(Instant occurredOn, UUID aggregateId, AuthorityId authority) implements RoleEvent {
 
-    private final AuthorityId authorityId;
-
-    public AuthorityAddedEvent(UUID roleId, AuthorityId authorityId) {
-        super(roleId);
-        this.authorityId = authorityId;
-    }
-
-    public AuthorityId getAuthority() {
-        return authorityId;
+    public AuthorityAddedEvent(UUID roleId, AuthorityId authority) {
+        this(Instant.now(), roleId, authority);
     }
 }

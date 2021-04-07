@@ -1,18 +1,11 @@
 package accounting.account.events;
 
+import java.time.Instant;
 import java.util.UUID;
 
-public class UsernameChangedEvent extends AccountEvent {
-
-    private final String username;
+public record UsernameChangedEvent(Instant occurredOn, UUID aggregateId, String username) implements AccountEvent {
 
     public UsernameChangedEvent(UUID accountId, String username) {
-        super(accountId);
-        this.username = username;
+        this(Instant.now(), accountId, username);
     }
-
-    public String getUsername() {
-        return username;
-    }
-
 }
