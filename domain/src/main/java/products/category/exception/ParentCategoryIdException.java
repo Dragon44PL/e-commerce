@@ -1,4 +1,4 @@
-package categories.category.exception;
+package products.category.exception;
 
 public class ParentCategoryIdException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package users.vo;
+package users.user.vo;
 
 public record PhoneNumber(String prefix, String number) {
 

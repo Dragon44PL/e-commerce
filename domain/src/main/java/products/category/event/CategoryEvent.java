@@ -1,4 +1,4 @@
-package categories.category.event;
+package products.category.event;
 
 import domain.events.DomainEvent;
 import java.util.UUID;

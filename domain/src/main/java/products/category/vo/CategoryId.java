@@ -1,4 +1,4 @@
-package categories.category.vo;
+package products.category.vo;
 
 import java.util.UUID;
 

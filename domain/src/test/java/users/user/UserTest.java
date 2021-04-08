@@ -1,11 +1,12 @@
-package users;
+package users.user;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import users.events.UserCreatedEvent;
-import users.events.UserEvent;
-import users.events.UserInformationChangedEvent;
-import users.vo.*;
+import users.user.User;
+import users.user.events.UserCreatedEvent;
+import users.user.events.UserEvent;
+import users.user.events.UserInformationChangedEvent;
+import users.user.vo.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

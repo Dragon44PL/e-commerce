@@ -1,4 +1,4 @@
-package users.vo;
+package users.user.vo;
 
 public record UserInfo(Personality personality, PhoneNumber phoneNumber) {
 

@@ -1,7 +1,7 @@
-package users.vo;
+package users.user.vo;
 
 import domain.vo.EventEntitySnapshot;
-import users.events.UserEvent;
+import users.user.events.UserEvent;
 import java.util.List;
 import java.util.UUID;
 

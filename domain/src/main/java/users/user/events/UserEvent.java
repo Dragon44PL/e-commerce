@@ -1,4 +1,4 @@
-package users.events;
+package users.user.events;
 
 import domain.events.DomainEvent;
 import java.util.UUID;

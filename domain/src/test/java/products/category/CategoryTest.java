@@ -1,11 +1,11 @@
-package categories.category;
+package products.category;
 
-import categories.category.event.CategoryCreatedEvent;
-import categories.category.event.CategoryEvent;
-import categories.category.event.ParentCategoryChangedEvent;
-import categories.category.exception.ParentCategoryIdException;
-import categories.category.vo.CategoryId;
-import categories.category.vo.CategorySnapshot;
+import products.category.event.CategoryCreatedEvent;
+import products.category.event.CategoryEvent;
+import products.category.event.ParentCategoryChangedEvent;
+import products.category.exception.ParentCategoryIdException;
+import products.category.vo.CategoryId;
+import products.category.vo.CategorySnapshot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.List;

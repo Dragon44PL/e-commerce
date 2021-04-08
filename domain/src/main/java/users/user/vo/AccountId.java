@@ -1,4 +1,4 @@
-package users.vo;
+package users.user.vo;
 
 import java.util.UUID;
 

@@ -1,12 +1,12 @@
-package users;
+package users.user;
 
 import domain.AggregateRoot;
-import users.events.UserInformationChangedEvent;
-import users.events.UserCreatedEvent;
-import users.events.UserEvent;
-import users.vo.AccountId;
-import users.vo.UserInfo;
-import users.vo.UserSnapshot;
+import users.user.events.UserInformationChangedEvent;
+import users.user.events.UserCreatedEvent;
+import users.user.events.UserEvent;
+import users.user.vo.AccountId;
+import users.user.vo.UserInfo;
+import users.user.vo.UserSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

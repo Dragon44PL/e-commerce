@@ -1,7 +1,7 @@
-package users.events;
+package users.user.events;
 
-import users.vo.AccountId;
-import users.vo.UserInfo;
+import users.user.vo.AccountId;
+import users.user.vo.UserInfo;
 
 import java.time.Instant;
 import java.util.UUID;

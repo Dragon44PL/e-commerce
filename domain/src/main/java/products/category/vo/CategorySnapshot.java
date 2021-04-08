@@ -1,7 +1,8 @@
-package categories.category.vo;
+package products.category.vo;
 
-import categories.category.event.CategoryEvent;
+import products.category.event.CategoryEvent;
 import domain.vo.EventEntitySnapshot;
+
 import java.util.List;
 import java.util.UUID;
 
