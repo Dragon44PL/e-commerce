@@ -1,18 +1,20 @@
 package users.vo;
 
-public record PhoneNumber(int prefix, String number) {
+public record PhoneNumber(String prefix, String number) {
 
-    private static final String PLUS = "+";
+    public PhoneNumber(String number) {
+        this("", number);
+    }
 
-    public PhoneNumber changePrefix(int prefix) {
+    public PhoneNumber changePrefix(String prefix) {
         return new PhoneNumber(prefix, number);
     }
 
-    public PhoneNumber changeNumber(int prefix, String number) {
+    public PhoneNumber changeNumber(String number) {
         return new PhoneNumber(prefix, number);
     }
 
     public String toPhoneNumber() {
-        return PLUS + prefix + number;
+        return prefix + number;
     }
 }
