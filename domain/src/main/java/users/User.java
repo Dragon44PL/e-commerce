@@ -19,7 +19,7 @@ class User extends AggregateRoot<UUID, UserSnapshot, UserEvent> {
 
     static User create(UUID id, AccountId account, UserInfo userInfo) {
         final User user = new User(id, account, userInfo, new ArrayList<>());
-        user.registerEvent(new UserCreatedEvent(id));
+        user.registerEvent(new UserCreatedEvent(id, account, userInfo));
         return user;
     }
 
