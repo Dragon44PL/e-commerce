@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <properties>
-        <java.version>8</java.version>
+        <java.version>15</java.version>
     </properties>
 
     <build>
@@ -20,6 +20,9 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>--enable-preview</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
