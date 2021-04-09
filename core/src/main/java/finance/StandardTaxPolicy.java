@@ -1,29 +1,29 @@
 package finance;
 
-import finance.exception.TaxRateNotPositiveException;
+import finance.exception.NegativeTaxRatioException;
 import finance.policies.TaxPolicy;
 import finance.vo.Money;
-import finance.vo.Percentage;
+import finance.vo.TaxRatio;
 import finance.vo.Tax;
 
 public class StandardTaxPolicy implements TaxPolicy {
 
-    private final Percentage percentage;
+    private final TaxRatio taxRatio;
 
-    private StandardTaxPolicy(Percentage percentage) {
-        this.percentage = percentage;
+    private StandardTaxPolicy(TaxRatio taxRatio) {
+        this.taxRatio = taxRatio;
     }
 
-    public StandardTaxPolicy ofTaxPercentage(Percentage percentage) throws TaxRateNotPositiveException {
-        if(!percentage.isPositive()) {
-            throw new TaxRateNotPositiveException();
+    public StandardTaxPolicy ofTaxPercentage(TaxRatio taxRatio) throws NegativeTaxRatioException {
+        if(!taxRatio.isNonNegative()) {
+            throw new NegativeTaxRatioException();
         }
 
-        return new StandardTaxPolicy(percentage);
+        return new StandardTaxPolicy(taxRatio);
     }
 
     public Tax calculateTax(Money money) {
-        final Money calculated = percentage.ofMoney(money);
-        return new Tax(calculated, percentage);
+        final Money calculated = taxRatio.ofMoney(money);
+        return new Tax(calculated, taxRatio);
     }
 }
