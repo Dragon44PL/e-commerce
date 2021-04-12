@@ -37,7 +37,7 @@ class Product extends AggregateRoot<UUID, ProductSnapshot, ProductEvent> {
     }
 
     void changePrice(Money price) throws NegativePriceException {
-        if(price.isNegative()) {
+        if(price.lesserThan(Money.ZERO)) {
             throw new NegativePriceException();
         }
 
