@@ -9,6 +9,7 @@ import java.util.Currency;
 public record Money(BigDecimal value, Currency currency) {
 
     public static final Currency DEFAULT_CURRENCY = Currency.getInstance("EUR");
+    public static final Money ZERO = new Money(BigDecimal.ZERO, DEFAULT_CURRENCY);
 
     public Money(BigDecimal decimal) {
         this(decimal, DEFAULT_CURRENCY);
@@ -44,5 +45,9 @@ public record Money(BigDecimal value, Currency currency) {
         final BigDecimal decimalDivisor = BigDecimal.valueOf(divisor);
         final BigDecimal bigDecimal = value.divide(decimalDivisor, RoundingMode.HALF_EVEN);
         return new Money(bigDecimal, currency);
+    }
+
+    public boolean lesserThan(Money money) {
+        return value.compareTo(money.value) < 0;
     }
 }
