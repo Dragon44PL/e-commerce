@@ -1,18 +1,14 @@
 package accounting.account;
 
 import accounting.account.events.*;
-import accounting.account.vo.AccountSnapshot;
 import accounting.account.vo.RoleId;
-import accounting.role.vo.RoleSnapshot;
-import domain.Aggregate;
 import accounting.account.exception.PasswordExpiredException;
 import accounting.account.vo.Credentials;
 import accounting.account.vo.Password;
 import domain.AggregateRoot;
-import javax.management.relation.Role;
 import java.util.*;
 
-class Account extends AggregateRoot<UUID, AccountSnapshot, AccountEvent> {
+class Account extends AggregateRoot<UUID, AccountEvent> {
 
     private final UUID id;
     private Credentials credentials;
@@ -25,8 +21,8 @@ class Account extends AggregateRoot<UUID, AccountSnapshot, AccountEvent> {
         return account;
     }
 
-    static Account restore(AccountSnapshot accountSnapshot) {
-        return new Account(accountSnapshot.id(), accountSnapshot.credentials(), accountSnapshot.mail(), accountSnapshot.roles(), new ArrayList<>());
+    static Account restore(UUID id, Credentials credentials, String mail, Set<RoleId> roles) {
+        return new Account(id, credentials, mail, roles, new ArrayList<>());
     }
 
     private Account(UUID id, Credentials credentials, String mail, Set<RoleId> roles, List<AccountEvent> accountEvents) {
@@ -47,7 +43,16 @@ class Account extends AggregateRoot<UUID, AccountSnapshot, AccountEvent> {
     }
 
     void changePassword(Password candidate) throws PasswordExpiredException {
+        if(!samePassword(candidate)) {
+            processChangingPassword(candidate);
+        }
+    }
 
+    private boolean samePassword(Password candidate) {
+        return credentials.getPassword().equals(candidate);
+    }
+
+    private void processChangingPassword(Password candidate) {
         if(isCandidateExpired(candidate)) {
             throw new PasswordExpiredException();
         }
@@ -85,15 +90,15 @@ class Account extends AggregateRoot<UUID, AccountSnapshot, AccountEvent> {
         registerEvent(roleRemovedEvent);
     }
 
-    void changeEmail(String mail) {
-        this.mail = mail;
-        final MailChangedEvent mailChangedEvent = new MailChangedEvent(id, mail);
-        registerEvent(mailChangedEvent);
+    void changeEmail(String candidate) {
+        if(!sameMail(candidate)) {
+            this.mail = candidate;
+            final MailChangedEvent mailChangedEvent = new MailChangedEvent(id, mail);
+            registerEvent(mailChangedEvent);
+        }
     }
 
-    @Override
-    public AccountSnapshot getSnapshot() {
-        final Set<RoleId> currentRoles = new HashSet<>(roles);
-        return new AccountSnapshot(id, mail, credentials, currentRoles, new ArrayList<>(events()));
+    private boolean sameMail(String candidate) {
+        return mail.equals(candidate);
     }
 }

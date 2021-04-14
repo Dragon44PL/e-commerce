@@ -1,7 +1,6 @@
 package accounting.account;
 
 import accounting.account.events.*;
-import accounting.account.vo.AccountSnapshot;
 import accounting.account.vo.RoleId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import accounting.account.vo.Credentials;
 import accounting.account.vo.Password;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -42,18 +40,6 @@ class AccountTest {
     private final Class<MailChangedEvent> MAIL_CHANGED_EVENT = MailChangedEvent.class;
 
     @Test
-    @DisplayName("Account Should Create Snapshot With Init Values")
-    void accountShouldCreateSnapshotWithInitValues() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
-        final AccountSnapshot accountSnapshot = account.getSnapshot();
-
-        assertEquals(accountSnapshot.id(), ACCOUNT_ID);
-        assertEquals(accountSnapshot.mail(), ACCOUNT_MAIL);
-        assertEquals(accountSnapshot.credentials(), CREDENTIALS);
-        assertEquals(accountSnapshot.roles().size(),1);
-    }
-
-    @Test
     @DisplayName("Account Should Have Added Role")
     void accountShouldHaveAddedRole() {
         final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
@@ -74,81 +60,76 @@ class AccountTest {
         final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         final RoleId anotherRole = new RoleId(ANOTHER_ID);
         account.addRole(anotherRole);
-        final AccountSnapshot accountSnapshot = account.getSnapshot();
 
-        final Optional<AccountEvent> accountEvent = accountSnapshot.findLatestEvent();
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
         assertTrue(accountEvent.isPresent());
         assertEquals(accountEvent.get().getClass(), ROLE_ADDED_EVENT);
 
         final RoleAddedEvent roleAddedEvent = (RoleAddedEvent) accountEvent.get();
         assertEquals(roleAddedEvent.role(), anotherRole);
         assertEquals(roleAddedEvent.aggregateId(), ACCOUNT_ID);
-        assertEquals(accountSnapshot.roles().size(), 2);
+        assertTrue(account.hasRole(anotherRole));
     }
 
     @Test
     @DisplayName("Account Should Not Add Role And Not Generate Event")
     void accountShouldNotAddRoleAndGenerateEvent() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         final RoleId anotherRole = new RoleId(ANOTHER_ID);
 
         account.addRole(anotherRole);
-        final AccountSnapshot firstSnapshot = account.getSnapshot();
+        final Optional<AccountEvent> firstEvent = account.findLatestEvent();
+        assertTrue(firstEvent.isPresent());
+        assertEquals(firstEvent.get().getClass(), ROLE_ADDED_EVENT);
 
         account.addRole(anotherRole);
-        final AccountSnapshot secondSnapshot = account.getSnapshot();
+        final Optional<AccountEvent> secondEvent = account.findLatestEvent();
+        assertEquals(firstEvent.get().getClass(), ROLE_ADDED_EVENT);
 
-        final List<AccountEvent> firstSnapshotEvents = firstSnapshot.events();
-        final List<AccountEvent> secondSnapshotEvents = secondSnapshot.events();
-        assertEquals(firstSnapshotEvents.size(), secondSnapshotEvents.size());
+        assertEquals(firstEvent, secondEvent);
+        assertTrue(account.hasRole(anotherRole));
+        assertEquals(account.events().size(), 1);
     }
 
     @Test
     @DisplayName("Account Should Not Add Role When Another Id Is The Same")
     void accountShouldNotAddRoleWhenSameId() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         final RoleId anotherRole = new RoleId(ID);
         account.addRole(anotherRole);
-        final AccountSnapshot accountSnapshot = account.getSnapshot();
+        assertTrue(account.hasRole(anotherRole));
 
-        final Optional<AccountEvent> accountEvent = accountSnapshot.findLatestEvent();
-        assertTrue(accountEvent.isPresent());
-        assertNotEquals(accountEvent.get().getClass(), ROLE_ADDED_EVENT);
-        assertEquals(accountSnapshot.roles().size(), 1);
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
+        assertFalse(accountEvent.isPresent());
     }
 
     @Test
     @DisplayName("Account Should Remove Role And Generate Event")
     void accountShouldRemoveRoleAndGenerateEvent() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         final RoleId anotherRole = new RoleId(ANOTHER_ID);
         account.addRole(anotherRole);
         account.removeRole(anotherRole);
-        final AccountSnapshot accountSnapshot = account.getSnapshot();
+        assertFalse(account.hasRole(anotherRole));
 
-        final Optional<AccountEvent> accountEvent = accountSnapshot.findLatestEvent();
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
         assertTrue(accountEvent.isPresent());
         assertEquals(accountEvent.get().getClass(), ROLE_REMOVED_EVENT);
 
         final RoleRemovedEvent roleRemovedEvent = (RoleRemovedEvent) accountEvent.get();
         assertEquals(roleRemovedEvent.role(), anotherRole);
         assertEquals(roleRemovedEvent.aggregateId(), ACCOUNT_ID);
-        assertEquals(accountSnapshot.roles().size(), 1);
     }
 
     @Test
     @DisplayName("Account Should Not Remove Role And Not Generate Event")
     void accountShouldNotRemoveRoleAndGenerateEvent() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         final RoleId anotherRole = new RoleId(ANOTHER_ID);
-
         account.removeRole(anotherRole);
-        final AccountSnapshot accountSnapshot = account.getSnapshot();
-        final Optional<AccountEvent> accountEvent = accountSnapshot.findLatestEvent();
 
-        assertTrue(accountEvent.isPresent());
-        assertNotEquals(accountEvent.get().getClass(), ROLE_REMOVED_EVENT);
-        assertEquals(accountSnapshot.roles().size(), 1);
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
+        assertFalse(accountEvent.isPresent());
     }
 
     @Test
@@ -158,7 +139,7 @@ class AccountTest {
         final Account account = Account.create(ACCOUNT_ID, credentials, ACCOUNT_MAIL, ROLES);
         account.changePassword(ANOTHER_PASSWORD);
 
-        final Optional<AccountEvent> accountEvent = account.getSnapshot().findLatestEvent();
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
         assertTrue(accountEvent.isPresent());
         assertEquals(accountEvent.get().getClass(), PASSWORD_CHANGED_EVENT);
 
@@ -174,7 +155,7 @@ class AccountTest {
         final Account account = Account.create(ACCOUNT_ID, credentials, ACCOUNT_MAIL, ROLES);
         account.changePassword(ANOTHER_PASSWORD);
 
-        final Optional<AccountEvent> accountEvent = account.getSnapshot().findLatestEvent();
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
         assertTrue(accountEvent.isPresent());
         assertEquals(accountEvent.get().getClass(), PASSWORD_CHANGED_EVENT);
 
@@ -198,7 +179,7 @@ class AccountTest {
         final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         account.changeUsername(ANOTHER_USERNAME);
 
-        final Optional<AccountEvent> accountEvent = account.getSnapshot().findLatestEvent();
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
         assertTrue(accountEvent.isPresent());
         assertEquals(accountEvent.get().getClass(), USERNAME_CHANGED_EVENT);
 
@@ -210,10 +191,10 @@ class AccountTest {
     @Test
     @DisplayName("Account's Mail Should Be Changed And Generate Event")
     void accountMailShouldBeChangedAndGenerateEvent() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
         account.changeEmail(ANOTHER_ACCOUNT_MAIL);
 
-        final Optional<AccountEvent> accountEvent = account.getSnapshot().findLatestEvent();
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
         assertTrue(accountEvent.isPresent());
         assertEquals(accountEvent.get().getClass(), MAIL_CHANGED_EVENT);
 
@@ -223,30 +204,21 @@ class AccountTest {
     }
 
     @Test
-    @DisplayName("Modifying Account Snapshot Events Should Not Touch Account Events")
-    void modifyingSnapshotEventsShouldNotTouchAggregateEvents() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
-        final List<AccountEvent> modifiedAccountEvents = account.getSnapshot().events();
-        modifiedAccountEvents.clear();
+    @DisplayName("Account's Mail Should Not Be Changed When Same Mail")
+    void accountMailShouldNotBeChangedWhenSameMail() {
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        account.changeEmail(ACCOUNT_MAIL);
 
-        final List<AccountEvent> originalAccountEvents = account.getSnapshot().events();
-        assertNotEquals(modifiedAccountEvents.size(), originalAccountEvents.size());
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
+        assertFalse(accountEvent.isPresent());
     }
 
     @Test
     @DisplayName("Restoring Account Should Create Account With Values From Account Snapshot")
     void restoringShouldCreateAccountWithValuesFromSnapshot() {
-        final Account account = Account.create(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
-        final AccountSnapshot accountSnapshot = account.getSnapshot();
-
-        final Account anotherAccount = Account.restore(accountSnapshot);
-        final AccountSnapshot anotherAccountSnapshot = anotherAccount.getSnapshot();
-
-        assertEquals(accountSnapshot.id(), anotherAccountSnapshot.id());
-        assertEquals(accountSnapshot.credentials(), anotherAccountSnapshot.credentials());
-        assertEquals(accountSnapshot.mail(), anotherAccountSnapshot.mail());
-        assertEquals(accountSnapshot.roles(), anotherAccountSnapshot.roles());
-        assertNotEquals(accountSnapshot.events().size(), anotherAccountSnapshot.events().size());
+        final Account account = Account.restore(ACCOUNT_ID, CREDENTIALS, ACCOUNT_MAIL, ROLES);
+        final Optional<AccountEvent> accountEvent = account.findLatestEvent();
+        assertFalse(accountEvent.isPresent());
     }
 
 }
