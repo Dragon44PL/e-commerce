@@ -6,12 +6,11 @@ import users.user.events.UserCreatedEvent;
 import users.user.events.UserEvent;
 import users.user.vo.AccountId;
 import users.user.vo.UserInfo;
-import users.user.vo.UserSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class User extends AggregateRoot<UUID, UserSnapshot, UserEvent> {
+class User extends AggregateRoot<UUID, UserEvent> {
 
     private final UUID id;
     private final AccountId account;
@@ -23,8 +22,8 @@ class User extends AggregateRoot<UUID, UserSnapshot, UserEvent> {
         return user;
     }
 
-    static User restore(UserSnapshot userSnapshot) {
-        return new User(userSnapshot.id(), userSnapshot.account(), userSnapshot.userInfo(), new ArrayList<>());
+    static User restore(UUID id, AccountId account, UserInfo userInfo) {
+        return new User(id, account, userInfo, new ArrayList<>());
     }
 
     private User(UUID id, AccountId account, UserInfo userInfo, List<UserEvent> events) {
@@ -34,14 +33,16 @@ class User extends AggregateRoot<UUID, UserSnapshot, UserEvent> {
         this.userInfo = userInfo;
     }
 
-    void changeUserInformation(UserInfo userInfo) {
-        this.userInfo = userInfo;
-        final UserInformationChangedEvent userInformationChangedEvent = new UserInformationChangedEvent(id, userInfo);
-        registerEvent(userInformationChangedEvent);
+    void changeUserInformation(UserInfo candidate) {
+        if(!sameUserInformation(candidate)) {
+            this.userInfo = candidate;
+            final UserInformationChangedEvent userInformationChangedEvent = new UserInformationChangedEvent(id, userInfo);
+            registerEvent(userInformationChangedEvent);
+        }
     }
 
-    @Override
-    public UserSnapshot getSnapshot() {
-        return new UserSnapshot(id, account, userInfo, new ArrayList<>(events()));
+    private boolean sameUserInformation(UserInfo candidate) {
+        return userInfo.equals(candidate);
     }
+
 }
