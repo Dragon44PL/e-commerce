@@ -3,14 +3,12 @@ package accounting.role;
 import accounting.role.events.RoleCreatedEvent;
 import accounting.role.events.RoleEvent;
 import accounting.role.vo.AuthorityId;
-import accounting.role.vo.RoleSnapshot;
 import accounting.role.events.AuthorityAddedEvent;
 import accounting.role.events.AuthorityRemovedEvent;
 import domain.AggregateRoot;
 import java.util.*;
-import java.util.stream.Collectors;
 
-class Role extends AggregateRoot<UUID, RoleSnapshot, RoleEvent> {
+class Role extends AggregateRoot<UUID, RoleEvent> {
 
     private final UUID id;
     private final String name;
@@ -22,8 +20,8 @@ class Role extends AggregateRoot<UUID, RoleSnapshot, RoleEvent> {
         return role;
     }
 
-    static Role restore(RoleSnapshot roleSnapshot) {
-        return new Role(roleSnapshot.id(), roleSnapshot.name(), roleSnapshot.authorities(), new ArrayList<>());
+    static Role restore(UUID id, String name, Set<AuthorityId> authorities) {
+        return new Role(id, name, authorities, new ArrayList<>());
     }
 
     private Role(UUID id, String name, Set<AuthorityId> authorities, List<RoleEvent> roleEvents) {
@@ -59,9 +57,4 @@ class Role extends AggregateRoot<UUID, RoleSnapshot, RoleEvent> {
         registerEvent(authorityRemovedEvent);
     }
 
-    @Override
-    public RoleSnapshot getSnapshot() {
-        final Set<AuthorityId> currentAuthorities = authorities.stream().collect(Collectors.toUnmodifiableSet());
-        return new RoleSnapshot(id, name, currentAuthorities, new ArrayList<>(events()));
-    }
 }
