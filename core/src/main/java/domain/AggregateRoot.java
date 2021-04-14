@@ -1,10 +1,11 @@
 package domain;
 
 import domain.events.DomainEvent;
-import domain.vo.EntitySnapshot;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public abstract class AggregateRoot<I , T extends EntitySnapshot, E extends DomainEvent<I>> implements Aggregate<I, T> {
+public abstract class AggregateRoot<I, E extends DomainEvent<I>> implements Aggregate {
 
     private final List<E> events;
 
@@ -12,15 +13,16 @@ public abstract class AggregateRoot<I , T extends EntitySnapshot, E extends Doma
         this.events = events;
     }
 
-    protected void registerEvent(E event) {
+    protected final void registerEvent(E event) {
         this.events.add(event);
     }
 
-    protected void resetEventsState() {
-        events.clear();
+    public final List<E> events() {
+        return new ArrayList<>(events);
     }
 
-    protected List<E> events() {
-        return events;
+    public final Optional<E> findLatestEvent() {
+        final int count = events.size();
+        return (count != 0) ? events.stream().skip(count - 1).findFirst() : Optional.empty();
     }
 }
