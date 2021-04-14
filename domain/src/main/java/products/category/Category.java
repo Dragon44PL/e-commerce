@@ -2,19 +2,19 @@ package products.category;
 
 import products.category.event.CategoryCreatedEvent;
 import products.category.event.CategoryEvent;
+import products.category.event.CategoryNameChangedEvent;
 import products.category.event.ParentCategoryChangedEvent;
 import products.category.exception.ParentCategoryIdException;
 import products.category.vo.CategoryId;
-import products.category.vo.CategorySnapshot;
 import domain.AggregateRoot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class Category extends AggregateRoot<UUID, CategorySnapshot, CategoryEvent> {
+class Category extends AggregateRoot<UUID, CategoryEvent> {
 
     private final UUID id;
-    private final String name;
+    private String name;
     private CategoryId parentCategory;
 
     static Category create(UUID id, String name, CategoryId topCategory) {
@@ -27,8 +27,8 @@ class Category extends AggregateRoot<UUID, CategorySnapshot, CategoryEvent> {
         return Category.create(id, name, null);
     }
 
-    static Category restore(CategorySnapshot categorySnapshot) {
-        return new Category(categorySnapshot.id(), categorySnapshot.name(), categorySnapshot.parentCategory(), new ArrayList<>());
+    static Category restore(UUID id, String name, CategoryId parentCategory) {
+        return new Category(id, name, parentCategory, new ArrayList<>());
     }
 
     private Category(UUID id, String name, CategoryId parentCategory, List<CategoryEvent> categoryEvents) {
@@ -46,17 +46,25 @@ class Category extends AggregateRoot<UUID, CategorySnapshot, CategoryEvent> {
         return parentCategory != null;
     }
 
-    void changeParentCategory(CategoryId topCategory) throws ParentCategoryIdException {
-        if(sameCategory(topCategory)) {
+    void changeParentCategory(CategoryId parentCategory) throws ParentCategoryIdException {
+        if(sameCategory(parentCategory)) {
             throw new ParentCategoryIdException();
         }
 
-        this.parentCategory = topCategory;
-        registerEvent(new ParentCategoryChangedEvent(id, topCategory));
+        this.parentCategory = parentCategory;
+        final ParentCategoryChangedEvent parentCategoryChangedEvent = new ParentCategoryChangedEvent(id, this.parentCategory);
+        registerEvent(parentCategoryChangedEvent);
     }
 
-    @Override
-    public CategorySnapshot getSnapshot() {
-        return new CategorySnapshot(id, name, parentCategory, new ArrayList<>(events()));
+    void changeCategoryName(String candidate) {
+        if(!sameCategoryName(candidate)) {
+            this.name = candidate;
+            final CategoryNameChangedEvent categoryNameChangedEvent = new CategoryNameChangedEvent(id, this.name);
+            this.registerEvent(categoryNameChangedEvent);
+        }
+    }
+
+    private boolean sameCategoryName(String candidate) {
+        return name.equals(candidate);
     }
 }

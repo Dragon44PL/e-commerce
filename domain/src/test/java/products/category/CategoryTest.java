@@ -2,13 +2,12 @@ package products.category;
 
 import products.category.event.CategoryCreatedEvent;
 import products.category.event.CategoryEvent;
+import products.category.event.CategoryNameChangedEvent;
 import products.category.event.ParentCategoryChangedEvent;
 import products.category.exception.ParentCategoryIdException;
 import products.category.vo.CategoryId;
-import products.category.vo.CategorySnapshot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,35 +24,24 @@ class CategoryTest {
     private final UUID CATEGORY_ID = UUID.randomUUID();
     private final String CATEGORY_NAME = "NAME";
 
+    private final String ANOTHER_CATEGORY_NAME = "ANOTHER NAME";
+
     private final Class<CategoryCreatedEvent> CATEGORY_CREATED_EVENT = CategoryCreatedEvent.class;
     private final Class<ParentCategoryChangedEvent> PARENT_CATEGORY_CHANGED_EVENT = ParentCategoryChangedEvent.class;
+    private final Class<CategoryNameChangedEvent> CATEGORY_NAME_CHANGED_EVENT = CategoryNameChangedEvent.class;
 
     private final Class<ParentCategoryIdException> PARENT_CATEGORY_ID_EXCEPTION = ParentCategoryIdException.class;
-
-    @Test
-    @DisplayName("Category Creation Should Create CategorySnapshot Properly")
-    void categoryCreationShouldCreateProperly() {
-        final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
-        final CategorySnapshot categorySnapshot = category.getSnapshot();
-
-        assertEquals(categorySnapshot.id(), CATEGORY_ID);
-        assertEquals(categorySnapshot.name(), CATEGORY_NAME);
-        assertEquals(categorySnapshot.parentCategory(), PARENT_CATEGORY);
-    }
 
     @Test
     @DisplayName("Category Creation Should Create CategoryCreateEvent Properly")
     void categoryCreationShouldCreateEvent() {
         final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
-        final CategorySnapshot categorySnapshot = category.getSnapshot();
-        final List<CategoryEvent> categoryEvents = categorySnapshot.events();
-        assertNotNull(categoryEvents);
-        assertFalse(categoryEvents.isEmpty());
 
-        final CategoryEvent categoryEvent = categoryEvents.stream().findFirst().get();
-        assertEquals(categoryEvent.getClass(), CATEGORY_CREATED_EVENT);
+        final Optional<CategoryEvent> categoryEvent = category.findLatestEvent();
+        assertTrue(categoryEvent.isPresent());
+        assertEquals(categoryEvent.get().getClass(), CATEGORY_CREATED_EVENT);
 
-        final CategoryCreatedEvent categoryCreatedEvent = (CategoryCreatedEvent) categoryEvent;
+        final CategoryCreatedEvent categoryCreatedEvent = (CategoryCreatedEvent) categoryEvent.get();
         assertEquals(categoryCreatedEvent.parentCategory(), PARENT_CATEGORY);
         assertEquals(categoryCreatedEvent.name(), CATEGORY_NAME);
         assertEquals(categoryCreatedEvent.aggregateId(), CATEGORY_ID);
@@ -90,14 +78,10 @@ class CategoryTest {
     @Test
     @DisplayName("Category Should Change Parent")
     void categoryShouldChangeParent() {
-        final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
+        final Category category = Category.restore(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
         category.changeParentCategory(ANOTHER_PARENT_CATEGORY);
-        final CategorySnapshot categorySnapshot = category.getSnapshot();
-        final List<CategoryEvent> categoryEvents = categorySnapshot.events();
-        assertNotNull(categoryEvents);
-        assertFalse(categoryEvents.isEmpty());
 
-        final Optional<CategoryEvent> categoryEvent = categorySnapshot.findLatestEvent();
+        final Optional<CategoryEvent> categoryEvent = category.findLatestEvent();
         assertTrue(categoryEvent.isPresent());
         assertEquals(categoryEvent.get().getClass(), PARENT_CATEGORY_CHANGED_EVENT);
 
@@ -108,33 +92,32 @@ class CategoryTest {
     @Test
     @DisplayName("Category Should Throw ParentCategoryIdException")
     void categoryShouldThrowParentCategoryIdException() {
-        final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
+        final Category category = Category.restore(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
         assertThrows(PARENT_CATEGORY_ID_EXCEPTION, () -> category.changeParentCategory(new CategoryId(CATEGORY_ID)));
     }
 
     @Test
-    @DisplayName("Modifying Category Snapshot Events Should Not Touch Category Events")
-    void modifyingSnapshotEventsShouldNotTouchAggregateEvents() {
-        final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
-        final List<CategoryEvent> modifiedCategoryEvents = category.getSnapshot().events();
-        modifiedCategoryEvents.clear();
+    @DisplayName("Category Name Should Change And Generate CategoryNameChangedEvent")
+    void categoryNameShouldChangeAndGenerateEvent() {
+        final Category category = Category.restore(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
+        category.changeCategoryName(ANOTHER_CATEGORY_NAME);
 
-        final List<CategoryEvent> originalCategoryEvents = category.getSnapshot().events();
-        assertNotEquals(modifiedCategoryEvents.size(), originalCategoryEvents.size());
+        final Optional<CategoryEvent> categoryEvent = category.findLatestEvent();
+        assertTrue(categoryEvent.isPresent());
+        assertEquals(categoryEvent.get().getClass(), CATEGORY_NAME_CHANGED_EVENT);
+
+        final CategoryNameChangedEvent categoryNameChangedEvent = (CategoryNameChangedEvent) categoryEvent.get();
+        assertEquals(categoryNameChangedEvent.name(), ANOTHER_CATEGORY_NAME);
+        assertEquals(categoryNameChangedEvent.aggregateId(), CATEGORY_ID);
     }
 
     @Test
-    @DisplayName("Restoring Category Should Create Account With Values From Category Snapshot")
-    void restoringShouldCreateCategoryWithValuesFromSnapshot() {
-        final Category category = Category.create(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
-        final CategorySnapshot categorySnapshot = category.getSnapshot();
+    @DisplayName("Category Name Should Not Change When The Same")
+    void categoryNameShouldNotChange() {
+        final Category category = Category.restore(CATEGORY_ID, CATEGORY_NAME, PARENT_CATEGORY);
+        category.changeCategoryName(CATEGORY_NAME);
 
-        final Category anotherCategory = Category.restore(categorySnapshot);
-        final CategorySnapshot anotherCategorySnapshot = anotherCategory.getSnapshot();
-
-        assertEquals(categorySnapshot.id(), anotherCategorySnapshot.id());
-        assertEquals(categorySnapshot.name(), anotherCategorySnapshot.name());
-        assertEquals(categorySnapshot.parentCategory(), anotherCategorySnapshot.parentCategory());
-        assertNotEquals(categorySnapshot.events().size(), anotherCategorySnapshot.events().size());
+        final Optional<CategoryEvent> categoryEvent = category.findLatestEvent();
+        assertFalse(categoryEvent.isPresent());
     }
 }
