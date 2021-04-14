@@ -2,10 +2,8 @@ package accounting.authority;
 
 import accounting.authority.events.AuthorityCreatedEvent;
 import accounting.authority.events.AuthorityEvent;
-import accounting.authority.vo.AuthoritySnapshot;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,26 +17,11 @@ class AuthorityTest {
     private final Class<AuthorityCreatedEvent> AUTHORITY_CREATED_EVENT = AuthorityCreatedEvent.class;
 
     @Test
-    @DisplayName("Authority Should Return Snapshot With Proper Data")
-    void authorityShouldReturnSnapshotWithProperData() {
-        final Authority authority = Authority.create(DEFAULT_ID, DEFAULT_NAME);
-        final AuthoritySnapshot authoritySnapshot = authority.getSnapshot();
-
-        assertNotNull(authoritySnapshot);
-        assertEquals(DEFAULT_ID, authoritySnapshot.id());
-        assertEquals(DEFAULT_NAME, authoritySnapshot.name());
-    }
-
-    @Test
     @DisplayName("Creating Authority Should Generate Event")
     void authorityShouldReturnGenerateEvent() {
         final Authority authority = Authority.create(DEFAULT_ID, DEFAULT_NAME);
-        final AuthoritySnapshot authoritySnapshot = authority.getSnapshot();
-        final List<AuthorityEvent> authorityEvents = authoritySnapshot.events();
-        assertNotNull(authorityEvents);
-        assertFalse(authorityEvents.isEmpty());
 
-        final Optional<AuthorityEvent> authorityEvent = authoritySnapshot.findLatestEvent();
+        final Optional<AuthorityEvent> authorityEvent = authority.findLatestEvent();
         assertTrue(authorityEvent.isPresent());
         assertEquals(authorityEvent.get().getClass(), AUTHORITY_CREATED_EVENT);
 
@@ -48,27 +31,11 @@ class AuthorityTest {
     }
 
     @Test
-    @DisplayName("Modifying Authority Snapshot Events Should Not Touch Authority Events")
-    void modifyingSnapshotEventsShouldNotTouchAggregateEvents() {
-        final Authority authority = Authority.create(DEFAULT_ID, DEFAULT_NAME);
-        final List<AuthorityEvent> modifiedAuthorityEvents = authority.getSnapshot().events();
-        modifiedAuthorityEvents.clear();
+    @DisplayName("Restoring Authority Should Create Authority And Not Generate Event")
+    void restoringShouldCreateAuthorityAndNotGenerateEvent() {
+        final Authority authority = Authority.restore(DEFAULT_ID, DEFAULT_NAME);
 
-        final List<AuthorityEvent> originalAuthorityEvents = authority.getSnapshot().events();
-        assertNotEquals(modifiedAuthorityEvents.size(), originalAuthorityEvents.size());
-    }
-
-    @Test
-    @DisplayName("Restoring Authority Should Create Account With Values From Authority Snapshot")
-    void restoringShouldCreateAuthorityWithValuesFromSnapshot() {
-        final Authority authority = Authority.create(DEFAULT_ID, DEFAULT_NAME);
-        final AuthoritySnapshot authoritySnapshot = authority.getSnapshot();
-
-        final Authority anotherAuthority = Authority.restore(authoritySnapshot);
-        final AuthoritySnapshot anotherAuthoritySnapshot = anotherAuthority.getSnapshot();
-
-        assertEquals(authoritySnapshot.id(), anotherAuthoritySnapshot.id());
-        assertEquals(authoritySnapshot.name(), anotherAuthoritySnapshot.name());
-        assertNotEquals(authoritySnapshot.events().size(), anotherAuthoritySnapshot.events().size());
+        final Optional<AuthorityEvent> authorityEvent = authority.findLatestEvent();
+        assertFalse(authorityEvent.isPresent());
     }
 }

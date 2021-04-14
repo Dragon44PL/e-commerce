@@ -2,13 +2,12 @@ package accounting.authority;
 
 import accounting.authority.events.AuthorityCreatedEvent;
 import accounting.authority.events.AuthorityEvent;
-import accounting.authority.vo.AuthoritySnapshot;
 import domain.AggregateRoot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class Authority extends AggregateRoot<UUID, AuthoritySnapshot, AuthorityEvent> {
+class Authority extends AggregateRoot<UUID, AuthorityEvent> {
 
     private final UUID id;
     private final String name;
@@ -19,18 +18,13 @@ class Authority extends AggregateRoot<UUID, AuthoritySnapshot, AuthorityEvent> {
         return authority;
     }
 
-    static Authority restore(AuthoritySnapshot authoritySnapshot) {
-        return new Authority(authoritySnapshot.id(), authoritySnapshot.name(), new ArrayList<>());
+    static Authority restore(UUID id, String name) {
+        return new Authority(id, name, new ArrayList<>());
     }
 
     private Authority(UUID id, String name, List<AuthorityEvent> authorityEvents) {
         super(authorityEvents);
         this.id = id;
         this.name = name;
-    }
-
-    @Override
-    public AuthoritySnapshot getSnapshot() {
-        return new AuthoritySnapshot(id, name, new ArrayList<>(events()));
     }
 }
