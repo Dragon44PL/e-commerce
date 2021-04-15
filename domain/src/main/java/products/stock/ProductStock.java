@@ -42,7 +42,7 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
 
     void increaseProductAmount(int amount) throws ProductUnavailableException {
         this.checkProductState();
-        this.processAmountIncreasing(amount);
+        this.processIncreasingWhenPositiveAmount(amount);
         this.processChangingState();
     }
 
@@ -56,6 +56,14 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
         }
     }
 
+    private void processIncreasingWhenPositiveAmount(int amount) {
+        if(ProductQuantity.isQuantityEnough(amount)) {
+            this.processAmountIncreasing(amount);
+        } else {
+            this.processAmountDecreasing(amount);
+        }
+    }
+
     private void processAmountIncreasing(int amount) {
         this.productQuantity = productQuantity.increaseQuantity(amount);
         final QuantityChangedEvent quantityChangedEvent = new QuantityChangedEvent(id, productQuantity);
@@ -64,8 +72,16 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
 
     void decreaseProductAmount(int amount) throws ProductUnavailableException {
         this.checkProductState();
-        this.processAmountDecreasing(amount);
+        this.processDecreasingWhenPositiveAmount(amount);
         this.processChangingState();
+    }
+
+    private void processDecreasingWhenPositiveAmount(int amount) {
+        if(ProductQuantity.isQuantityEnough(amount)) {
+            this.processAmountDecreasing(amount);
+        } else {
+            this.processAmountIncreasing(amount);
+        }
     }
 
     private void processAmountDecreasing(int amount) {
