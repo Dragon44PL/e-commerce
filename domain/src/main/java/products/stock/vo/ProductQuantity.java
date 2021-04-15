@@ -30,7 +30,7 @@ public record ProductQuantity(int quantity) {
         return new ProductQuantity(candidate);
     }
 
-    public boolean isQuantityEnough(int candidate) {
+    public static boolean isQuantityEnough(int candidate) {
         return candidate >= MIN_QUANTITY;
     }
 
