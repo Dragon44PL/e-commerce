@@ -1,6 +1,6 @@
 package domain;
 
-public interface DomainRepository<I, T extends Aggregate<I>> {
+public interface DomainRepository<I, T extends Aggregate> {
     void deleteById(I id);
     T save(T t);
 }
