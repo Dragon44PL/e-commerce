@@ -1,13 +1,11 @@
 package products.stock;
 
 import domain.AggregateRoot;
-import products.stock.event.ProductStateChangedEvent;
-import products.stock.event.ProductStockCreatedEvent;
-import products.stock.event.ProductStockEvent;
-import products.stock.event.QuantityChangedEvent;
+import products.stock.event.*;
 import products.stock.exception.ProductClosedException;
 import products.stock.exception.ProductInactiveException;
 import products.stock.exception.ProductUnavailableException;
+import products.stock.vo.ProductAvailability;
 import products.stock.vo.ProductId;
 import products.stock.vo.ProductQuantity;
 import products.stock.vo.ProductState;
@@ -20,23 +18,25 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
     private final UUID id;
     private final ProductId product;
     private ProductState productState;
+    private ProductAvailability productAvailability;
     private ProductQuantity productQuantity;
 
-    public static ProductStock create(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
-        final ProductStock productStock = new ProductStock(id, product, productState, productQuantity, new ArrayList<>());
+    public static ProductStock create(UUID id, ProductId product, ProductState productState, ProductAvailability productAvailability, ProductQuantity productQuantity) {
+        final ProductStock productStock = new ProductStock(id, product, productState, productAvailability, productQuantity, new ArrayList<>());
         productStock.registerEvent(new ProductStockCreatedEvent(id, product, productState, productQuantity));
         return productStock;
     }
 
-    public static ProductStock restore(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
-        return new ProductStock(id, product, productState, productQuantity, new ArrayList<>());
+    public static ProductStock restore(UUID id, ProductId product, ProductState productState, ProductAvailability productAvailability, ProductQuantity productQuantity) {
+        return new ProductStock(id, product, productState, productAvailability, productQuantity, new ArrayList<>());
     }
 
-    private ProductStock(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity, List<ProductStockEvent> events) {
+    private ProductStock(UUID id, ProductId product, ProductState productState, ProductAvailability productAvailability, ProductQuantity productQuantity, List<ProductStockEvent> events) {
         super(events);
         this.id = id;
         this.product = product;
         this.productState = productState;
+        this.productAvailability = productAvailability;
         this.productQuantity = productQuantity;
     }
 
@@ -91,29 +91,29 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
     }
 
     private void processChangingState() {
-        this.productState = (productQuantity.isEmpty()) ? processProductOutOfStock() : processProductNotOutOfStock();
+        this.productAvailability = (productQuantity.isEmpty()) ? processProductOutOfStock() : processProductNotOutOfStock();
     }
 
-    private ProductState processProductOutOfStock() {
-        if(!productState.isOutOfStock()) {
-            final ProductState nextState = ProductState.OUT_OF_STOCK;
-            final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, nextState);
-            this.registerEvent(productStateChangedEvent);
-            return nextState;
+    private ProductAvailability processProductOutOfStock() {
+        if(!productAvailability.isOutOfStock()) {
+            final ProductAvailability availability = ProductAvailability.OUT_OF_STOCK;
+            final ProductAvailabilityChangedEvent productAvailabilityChangedEvent = new ProductAvailabilityChangedEvent(id, availability, productState);
+            this.registerEvent(productAvailabilityChangedEvent);
+            return availability;
         }
 
-        return productState;
+        return productAvailability ;
     }
 
-    private ProductState processProductNotOutOfStock() {
-        if(productState.isOutOfStock() || productState.isActive()) {
-            final ProductState nextState = ProductState.AVAILABLE;
-            final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, nextState);
-            this.registerEvent(productStateChangedEvent);
-            return nextState;
+    private ProductAvailability processProductNotOutOfStock() {
+        if(productAvailability.isOutOfStock() || productState.isActive()) {
+            final ProductAvailability availability = ProductAvailability.AVAILABLE;
+            final ProductAvailabilityChangedEvent productAvailabilityChangedEvent = new ProductAvailabilityChangedEvent(id, availability, productState);
+            this.registerEvent(productAvailabilityChangedEvent);
+            return availability;
         }
 
-        return productState;
+        return productAvailability;
     }
 
     void inactivate() throws ProductClosedException {
