@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ProductTest {
+class ProductTest {
 
     private final CategoryId CATEGORY = new CategoryId(UUID.randomUUID());
     private final Money PRICE = new Money(new BigDecimal(100));
