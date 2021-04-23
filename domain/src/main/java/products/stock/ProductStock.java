@@ -21,13 +21,15 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
     private ProductAvailability productAvailability;
     private ProductQuantity productQuantity;
 
-    public static ProductStock create(UUID id, ProductId product, ProductState productState, ProductAvailability productAvailability, ProductQuantity productQuantity) {
+    public static ProductStock create(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
+        final ProductAvailability productAvailability = predictProductAvailability(productQuantity);
         final ProductStock productStock = new ProductStock(id, product, productState, productAvailability, productQuantity, new ArrayList<>());
-        productStock.registerEvent(new ProductStockCreatedEvent(id, product, productState, productQuantity));
+        productStock.registerEvent(new ProductStockCreatedEvent(id, product, productState, productAvailability, productQuantity));
         return productStock;
     }
 
-    public static ProductStock restore(UUID id, ProductId product, ProductState productState, ProductAvailability productAvailability, ProductQuantity productQuantity) {
+    public static ProductStock restore(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
+        final ProductAvailability productAvailability = predictProductAvailability(productQuantity);
         return new ProductStock(id, product, productState, productAvailability, productQuantity, new ArrayList<>());
     }
 
@@ -42,7 +44,7 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
 
     void increaseProductAmount(int amount) throws ProductUnavailableException {
         this.checkProductState();
-        this.processIncreasingWhenPositiveAmount(amount);
+        this.processAmountIncreasing(amount);
         this.processChangingState();
     }
 
@@ -56,14 +58,6 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
         }
     }
 
-    private void processIncreasingWhenPositiveAmount(int amount) {
-        if(ProductQuantity.isQuantityEnough(amount)) {
-            this.processAmountIncreasing(amount);
-        } else {
-            this.processAmountDecreasing(amount);
-        }
-    }
-
     private void processAmountIncreasing(int amount) {
         this.productQuantity = productQuantity.increaseQuantity(amount);
         final QuantityChangedEvent quantityChangedEvent = new QuantityChangedEvent(id, productQuantity);
@@ -72,16 +66,8 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
 
     void decreaseProductAmount(int amount) throws ProductUnavailableException {
         this.checkProductState();
-        this.processDecreasingWhenPositiveAmount(amount);
+        this.processAmountDecreasing(amount);
         this.processChangingState();
-    }
-
-    private void processDecreasingWhenPositiveAmount(int amount) {
-        if(ProductQuantity.isQuantityEnough(amount)) {
-            this.processAmountDecreasing(amount);
-        } else {
-            this.processAmountIncreasing(amount);
-        }
     }
 
     private void processAmountDecreasing(int amount) {
@@ -95,20 +81,16 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
     }
 
     private ProductAvailability processProductOutOfStock() {
-        if(!productAvailability.isOutOfStock()) {
-            final ProductAvailability availability = ProductAvailability.OUT_OF_STOCK;
-            final ProductAvailabilityChangedEvent productAvailabilityChangedEvent = new ProductAvailabilityChangedEvent(id, availability, productState);
-            this.registerEvent(productAvailabilityChangedEvent);
-            return availability;
-        }
-
-        return productAvailability ;
+        final ProductAvailability availability = ProductAvailability.OUT_OF_STOCK;
+        final ProductAvailabilityChangedEvent productAvailabilityChangedEvent = new ProductAvailabilityChangedEvent(id, availability);
+        this.registerEvent(productAvailabilityChangedEvent);
+        return availability;
     }
 
     private ProductAvailability processProductNotOutOfStock() {
-        if(productAvailability.isOutOfStock() || productState.isActive()) {
+        if(productAvailability.isOutOfStock()) {
             final ProductAvailability availability = ProductAvailability.AVAILABLE;
-            final ProductAvailabilityChangedEvent productAvailabilityChangedEvent = new ProductAvailabilityChangedEvent(id, availability, productState);
+            final ProductAvailabilityChangedEvent productAvailabilityChangedEvent = new ProductAvailabilityChangedEvent(id, availability);
             this.registerEvent(productAvailabilityChangedEvent);
             return availability;
         }
@@ -116,29 +98,41 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
         return productAvailability;
     }
 
-    void inactivate() throws ProductClosedException {
-        if(productState.isClosed()) {
-            throw new ProductClosedException();
-        }
-
-        this.productState = ProductState.INACTIVE;
-        final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, productState);
-        this.registerEvent(productStateChangedEvent);
+    private static ProductAvailability predictProductAvailability(ProductQuantity productQuantity) {
+        return productQuantity.isEmpty() ? ProductAvailability.OUT_OF_STOCK : ProductAvailability.AVAILABLE;
     }
 
-    void activate() throws ProductClosedException {
+    void deactivateProduct() throws ProductClosedException {
+        checkProductIsNotClosed();
+
+        if(!productState.isInactive()) {
+            this.productState = ProductState.INACTIVE;
+            final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, productState);
+            this.registerEvent(productStateChangedEvent);
+        }
+    }
+
+    void activateProduct() throws ProductClosedException {
+        checkProductIsNotClosed();
+
+        if(!productState.isActive()) {
+            this.productState = ProductState.ACTIVE;
+            final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, productState);
+            this.registerEvent(productStateChangedEvent);
+        }
+    }
+
+    private void checkProductIsNotClosed() throws ProductClosedException {
         if(productState.isClosed()) {
             throw new ProductClosedException();
         }
-
-        this.productState = ProductState.ACTIVE;
-        final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, productState);
-        this.registerEvent(productStateChangedEvent);
     }
 
     void closeProduct() {
-        this.productState = ProductState.CLOSED;
-        final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, productState);
-        this.registerEvent(productStateChangedEvent);
+        if(!productState.isClosed()) {
+            this.productState = ProductState.CLOSED;
+            final ProductStateChangedEvent productStateChangedEvent = new ProductStateChangedEvent(id, productState);
+            this.registerEvent(productStateChangedEvent);
+        }
     }
 }
