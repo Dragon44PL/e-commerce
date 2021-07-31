@@ -21,14 +21,14 @@ class ProductStock extends AggregateRoot<UUID, ProductStockEvent> {
     private ProductAvailability productAvailability;
     private ProductQuantity productQuantity;
 
-    public static ProductStock create(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
+    static ProductStock create(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
         final ProductAvailability productAvailability = predictProductAvailability(productQuantity);
         final ProductStock productStock = new ProductStock(id, product, productState, productAvailability, productQuantity, new ArrayList<>());
         productStock.registerEvent(new ProductStockCreatedEvent(id, product, productState, productAvailability, productQuantity));
         return productStock;
     }
 
-    public static ProductStock restore(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
+    static ProductStock restore(UUID id, ProductId product, ProductState productState, ProductQuantity productQuantity) {
         final ProductAvailability productAvailability = predictProductAvailability(productQuantity);
         return new ProductStock(id, product, productState, productAvailability, productQuantity, new ArrayList<>());
     }
