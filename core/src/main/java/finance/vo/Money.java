@@ -11,11 +11,11 @@ public record Money(BigDecimal value, Currency currency) {
     public static final Currency DEFAULT_CURRENCY = Currency.getInstance("EUR");
     public static final Money ZERO = new Money(BigDecimal.ZERO, DEFAULT_CURRENCY);
 
-    public Money(BigDecimal decimal) {
-        this(decimal, DEFAULT_CURRENCY);
+    public Money(int value, Currency currency) {
+        this(BigDecimal.valueOf(value), currency);
     }
 
-    public Money addMoney(Money money) throws InvalidCurrencyException {
+    public Money add(Money money) throws InvalidCurrencyException {
 
         if(!currency.equals(money.currency)) {
             throw new InvalidCurrencyException();
