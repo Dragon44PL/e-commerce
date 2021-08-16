@@ -4,18 +4,18 @@ import java.math.BigDecimal;
 
 public record TaxRatio(double percentage) {
 
-    private BigDecimal ofDecimal(BigDecimal decimal) {
+    private BigDecimal of(BigDecimal decimal) {
         final BigDecimal ofDouble = BigDecimal.valueOf(percentage);
         return decimal.multiply(ofDouble);
     }
 
-    public Money ofMoney(Money money) {
+    public Money of(Money money) {
         final BigDecimal value = money.value();
-        final BigDecimal calculated = ofDecimal(value);
+        final BigDecimal calculated = of(value);
         return new Money(calculated, money.currency());
     }
 
-    public double asRatio(TaxRatio another) {
+    public double ratio(TaxRatio another) {
         return percentage / another.percentage;
     }
 

@@ -14,7 +14,7 @@ public class StandardTaxPolicy implements TaxPolicy {
         this.taxRatio = taxRatio;
     }
 
-    public StandardTaxPolicy ofTaxPercentage(TaxRatio taxRatio) throws NegativeTaxRatioException {
+    public static StandardTaxPolicy of(TaxRatio taxRatio) throws NegativeTaxRatioException {
         if(!taxRatio.isNonNegative()) {
             throw new NegativeTaxRatioException();
         }
@@ -23,7 +23,7 @@ public class StandardTaxPolicy implements TaxPolicy {
     }
 
     public Tax calculateTax(Money money) {
-        final Money calculated = taxRatio.ofMoney(money);
+        final Money calculated = taxRatio.of(money);
         return new Tax(calculated, taxRatio);
     }
 }

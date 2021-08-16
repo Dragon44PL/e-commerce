@@ -11,7 +11,7 @@ public record Money(BigDecimal value, Currency currency) {
     public static final Currency DEFAULT_CURRENCY = Currency.getInstance("EUR");
     public static final Money ZERO = new Money(BigDecimal.ZERO, DEFAULT_CURRENCY);
 
-    public Money(int value, Currency currency) {
+    public Money(float value, Currency currency) {
         this(BigDecimal.valueOf(value), currency);
     }
 
