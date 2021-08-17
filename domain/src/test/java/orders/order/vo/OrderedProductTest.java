@@ -17,11 +17,14 @@ class OrderedProductTest {
     private final Money PRODUCT_PRICE = new Money(10, PRODUCT_CURRENCY);
     private final UUID PRODUCT_ID = UUID.randomUUID();
 
-    private final int POSITIVE_VALUE = PRODUCT_AMOUNT - 3;
-    private final int NEGATIVE_VALUE = -(POSITIVE_VALUE - 5);
+    private final int POSITIVE_VALUE = PRODUCT_AMOUNT - 5;
+    private final int NEGATIVE_VALUE = -(POSITIVE_VALUE);
 
-    private final int GREATER_POSITIVE_VALUE = POSITIVE_VALUE * 5;
-    private final int GREATER_NEGATIVE_VALUE = -(GREATER_POSITIVE_VALUE - 5);
+    private final int GREATER_POSITIVE_VALUE = POSITIVE_VALUE * 2;
+    private final int GREATER_NEGATIVE_VALUE = NEGATIVE_VALUE * 2;
+
+    // OrderedProduct Exceptions
+    private final Class<NegativeAmountException> NEGATIVE_AMOUNT_EXCEPTION = NegativeAmountException.class;
 
     @Test
     @DisplayName("Ordered Product Should Be Created Properly")
@@ -92,14 +95,14 @@ class OrderedProductTest {
     @DisplayName("Ordered Product Should Throw NegativeAmountException When Amount Is Non Positive When Decreasing")
     void shouldThrowNegativeAmountExceptionWhenDecreasing() {
         final OrderedProduct orderedProduct = new OrderedProduct(PRODUCT_ID, PRODUCT_PRICE, PRODUCT_AMOUNT);
-        assertThrows(NegativeAmountException.class, () -> orderedProduct.decreaseAmount(GREATER_POSITIVE_VALUE));
+        assertThrows(NEGATIVE_AMOUNT_EXCEPTION, () -> orderedProduct.decreaseAmount(GREATER_POSITIVE_VALUE));
     }
 
     @Test
     @DisplayName("Ordered Product Should Throw NegativeAmountException When Amount Is Non Positive And Changing")
     void shouldThrowNegativeAmountExceptionWhenChanging() {
         final OrderedProduct orderedProduct = new OrderedProduct(PRODUCT_ID, PRODUCT_PRICE, PRODUCT_AMOUNT);
-        assertThrows(NegativeAmountException.class, () -> orderedProduct.changeAmount(GREATER_NEGATIVE_VALUE));
+        assertThrows(NEGATIVE_AMOUNT_EXCEPTION, () -> orderedProduct.changeAmount(GREATER_NEGATIVE_VALUE));
     }
 
     @Test
