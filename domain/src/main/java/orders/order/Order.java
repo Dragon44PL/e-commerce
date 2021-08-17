@@ -3,6 +3,7 @@ package orders.order;
 import domain.AggregateRoot;
 import finance.vo.Money;
 import orders.order.event.*;
+import orders.order.exception.OrderStatusNotCapableException;
 import orders.order.vo.OrderDestination;
 import orders.order.vo.OrderStatus;
 import orders.order.vo.OrderedProduct;
@@ -45,5 +46,24 @@ class Order extends AggregateRoot<UUID, OrderEvent> {
         final Money totalCost = products.stream().map(OrderedProduct::calculateTotalPrice).reduce(Money.ZERO, Money::add);
         final TotalPriceCalculatedEvent totalPriceCalculatedEvent = new TotalPriceCalculatedEvent(id, totalCost);
         this.registerEvent(totalPriceCalculatedEvent);
+    }
+
+    void changeOrderDestination(OrderDestination orderDestination) throws OrderStatusNotCapableException {
+        checkOrderStatus();
+        if(!containsDestination(orderDestination)) {
+            this.orderDestination = orderDestination;
+            final OrderDestinationChangedEvent orderDestinationChangedEvent = new OrderDestinationChangedEvent(this.id, orderDestination);
+            this.registerEvent(orderDestinationChangedEvent);
+        }
+    }
+
+    private void checkOrderStatus() {
+        if(!this.orderStatus.isCapableToProcess()) {
+            throw new OrderStatusNotCapableException(orderStatus);
+        }
+    }
+
+    private boolean containsDestination(OrderDestination orderDestination) {
+        return this.orderDestination.equals(orderDestination);
     }
 }
