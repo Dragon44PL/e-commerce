@@ -16,20 +16,28 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductTest {
 
     private final CategoryId CATEGORY = new CategoryId(UUID.randomUUID());
-    private final Money PRICE = new Money(new BigDecimal(100));
+    private final Money PRICE = new Money(new BigDecimal(100), Money.DEFAULT_CURRENCY);
     private final ProductDetails PRODUCT_DETAILS = new ProductDetails("Name", "Description");
     private final UUID PRODUCT_ID = UUID.randomUUID();
 
     private final CategoryId ANOTHER_CATEGORY = new CategoryId(UUID.randomUUID());
     private final ProductDetails ANOTHER_PRODUCT_DETAILS = PRODUCT_DETAILS.changeDescription("Another Description").changeName("Another Name");
-    private final Money ANOTHER_PRICE = new Money(new BigDecimal(50));
+    private final Money ANOTHER_PRICE = new Money(new BigDecimal(50), Money.DEFAULT_CURRENCY);
     private final Money ZERO_PRICE = Money.ZERO;
-    private final Money NEGATIVE_PRICE = new Money(new BigDecimal(-1));
+    private final Money NEGATIVE_PRICE = new Money(new BigDecimal(-1), Money.DEFAULT_CURRENCY);
+
+    /*
+        Product Events
+     */
 
     private final Class<ProductCreatedEvent> PRODUCT_CREATED_EVENT = ProductCreatedEvent.class;
     private final Class<CategoryChangedEvent> CATEGORY_CHANGED_EVENT = CategoryChangedEvent.class;
     private final Class<PriceChangedEvent> PRICE_CHANGED_EVENT = PriceChangedEvent.class;
     private final Class<ProductDetailsUpdatedEvent> PRODUCT_DETAILS_UPDATED_EVENT = ProductDetailsUpdatedEvent.class;
+
+    /*
+        Product Exceptions
+     */
 
     private final Class<NegativePriceException> NEGATIVE_PRICE_EXCEPTION = NegativePriceException.class;
 
@@ -53,8 +61,7 @@ class ProductTest {
     void productRestoreShouldNotGenerateEvent() {
         final Product product = Product.restore(PRODUCT_ID, PRODUCT_DETAILS, CATEGORY, PRICE);
         final Optional<ProductEvent> productEvent = product.findLatestEvent();
-        System.out.println(productEvent.isPresent());
-        //assertFalse(productEvent.isPresent());
+        assertFalse(productEvent.isPresent());
     }
 
     @Test
