@@ -1,6 +1,6 @@
-package domain;
+package org.ecommerce.shop.core;
 
-import domain.events.DomainEvent;
+import org.ecommerce.shop.core.events.DomainEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package domain.events;
+package org.ecommerce.shop.core.events;
 
 import java.time.Instant;
 
