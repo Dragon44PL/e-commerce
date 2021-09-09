@@ -1,4 +1,4 @@
-package finance.policies;
+package org.ecommerce.shop.finance.policies;
 
 import java.util.Locale;
 

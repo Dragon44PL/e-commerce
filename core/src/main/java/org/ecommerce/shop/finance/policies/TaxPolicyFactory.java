@@ -1,6 +1,6 @@
-package finance.policies;
+package org.ecommerce.shop.finance.policies;
 
-import finance.exception.UnsupportedLocaleException;
+import org.ecommerce.shop.finance.exception.UnsupportedLocaleException;
 import java.util.Locale;
 
 public interface TaxPolicyFactory {

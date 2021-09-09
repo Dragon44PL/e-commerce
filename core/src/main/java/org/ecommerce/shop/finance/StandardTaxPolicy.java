@@ -1,10 +1,10 @@
-package finance;
+package org.ecommerce.shop.finance;
 
-import finance.exception.NegativeTaxRatioException;
-import finance.policies.TaxPolicy;
-import finance.vo.Money;
-import finance.vo.TaxRatio;
-import finance.vo.Tax;
+import org.ecommerce.shop.finance.exception.NegativeTaxRatioException;
+import org.ecommerce.shop.finance.policies.TaxPolicy;
+import org.ecommerce.shop.finance.vo.Money;
+import org.ecommerce.shop.finance.vo.TaxRatio;
+import org.ecommerce.shop.finance.vo.Tax;
 
 public class StandardTaxPolicy implements TaxPolicy {
 

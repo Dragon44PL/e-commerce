@@ -1,4 +1,4 @@
-package finance.exception;
+package org.ecommerce.shop.finance.exception;
 
 public class InvalidCurrencyException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package finance.vo;
+package org.ecommerce.shop.finance.vo;
 
 import java.math.BigDecimal;
 

@@ -1,6 +1,6 @@
-package finance.vo;
+package org.ecommerce.shop.finance.vo;
 
-import finance.exception.InvalidCurrencyException;
+import org.ecommerce.shop.finance.exception.InvalidCurrencyException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
