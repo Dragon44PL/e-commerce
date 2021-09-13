@@ -1,6 +1,6 @@
-package users.user.events;
+package org.ecommerce.shop.users.user.events;
 
-import users.user.vo.UserInfo;
+import org.ecommerce.shop.users.user.vo.UserInfo;
 import java.time.Instant;
 import java.util.UUID;
 

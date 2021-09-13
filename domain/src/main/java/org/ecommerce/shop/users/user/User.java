@@ -1,11 +1,11 @@
-package users.user;
+package org.ecommerce.shop.users.user;
 
-import domain.AggregateRoot;
-import users.user.events.UserInformationChangedEvent;
-import users.user.events.UserCreatedEvent;
-import users.user.events.UserEvent;
-import users.user.vo.AccountId;
-import users.user.vo.UserInfo;
+import org.ecommerce.shop.core.AggregateRoot;
+import org.ecommerce.shop.users.user.events.UserInformationChangedEvent;
+import org.ecommerce.shop.users.user.events.UserCreatedEvent;
+import org.ecommerce.shop.users.user.events.UserEvent;
+import org.ecommerce.shop.users.user.vo.AccountId;
+import org.ecommerce.shop.users.user.vo.UserInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

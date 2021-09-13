@@ -1,4 +1,4 @@
-package users.user.vo;
+package org.ecommerce.shop.users.user.vo;
 
 public record Personality(String firstname, String surname) {
 

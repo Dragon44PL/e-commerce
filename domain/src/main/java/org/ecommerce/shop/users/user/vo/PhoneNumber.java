@@ -1,9 +1,11 @@
-package users.user.vo;
+package org.ecommerce.shop.users.user.vo;
+
+import java.util.Arrays;
 
 public record PhoneNumber(String prefix, String number) {
 
-    public PhoneNumber(String number) {
-        this("", number);
+    public PhoneNumber(String prefix, int[] number) {
+        this(prefix, Arrays.stream(number).toString());
     }
 
     public PhoneNumber changePrefix(String prefix) {
@@ -14,7 +16,8 @@ public record PhoneNumber(String prefix, String number) {
         return new PhoneNumber(prefix, number);
     }
 
-    public String toPhoneNumber() {
+    @Override
+    public String toString() {
         return prefix + number;
     }
 }

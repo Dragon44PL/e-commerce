@@ -1,6 +1,6 @@
-package users.user;
+package org.ecommerce.shop.users.user;
 
-import domain.DomainRepository;
+import org.ecommerce.shop.core.DomainRepository;
 import java.util.UUID;
 
 interface UserRepository extends DomainRepository<UUID, User> { }
