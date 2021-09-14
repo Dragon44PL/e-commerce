@@ -1,12 +1,12 @@
-package users.location;
+package org.ecommerce.shop.users.location;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import users.location.event.AddressChangedEvent;
-import users.location.event.LocationCreatedEvent;
-import users.location.event.LocationEvent;
-import users.location.vo.Address;
-import users.location.vo.Country;
+import org.ecommerce.shop.users.location.event.AddressChangedEvent;
+import org.ecommerce.shop.users.location.event.LocationCreatedEvent;
+import org.ecommerce.shop.users.location.event.LocationEvent;
+import org.ecommerce.shop.users.location.vo.Address;
+import org.ecommerce.shop.users.location.vo.Country;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;

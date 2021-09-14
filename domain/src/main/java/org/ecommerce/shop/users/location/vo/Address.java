@@ -1,4 +1,4 @@
-package users.location.vo;
+package org.ecommerce.shop.users.location.vo;
 
 public record Address(String street, String city, String region, Country country) {
 

@@ -1,4 +1,4 @@
-package users.location.vo;
+package org.ecommerce.shop.users.location.vo;
 
 import java.util.Currency;
 import java.util.Locale;

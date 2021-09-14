@@ -1,10 +1,10 @@
-package users.location;
+package org.ecommerce.shop.users.location;
 
-import domain.AggregateRoot;
-import users.location.event.AddressChangedEvent;
-import users.location.event.LocationCreatedEvent;
-import users.location.event.LocationEvent;
-import users.location.vo.Address;
+import org.ecommerce.shop.core.AggregateRoot;
+import org.ecommerce.shop.users.location.event.AddressChangedEvent;
+import org.ecommerce.shop.users.location.event.LocationCreatedEvent;
+import org.ecommerce.shop.users.location.event.LocationEvent;
+import org.ecommerce.shop.users.location.vo.Address;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

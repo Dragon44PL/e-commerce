@@ -1,6 +1,6 @@
-package users.location.event;
+package org.ecommerce.shop.users.location.event;
 
-import users.location.vo.Address;
+import org.ecommerce.shop.users.location.vo.Address;
 import java.time.Instant;
 import java.util.UUID;
 
