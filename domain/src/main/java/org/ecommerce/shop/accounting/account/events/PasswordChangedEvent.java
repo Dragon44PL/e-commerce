@@ -1,6 +1,6 @@
-package accounting.account.events;
+package org.ecommerce.shop.accounting.account.events;
 
-import accounting.account.vo.Password;
+import org.ecommerce.shop.accounting.account.vo.Password;
 import java.time.Instant;
 import java.util.UUID;
 

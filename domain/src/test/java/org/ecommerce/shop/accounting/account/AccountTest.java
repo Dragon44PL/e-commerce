@@ -1,12 +1,12 @@
-package accounting.account;
+package org.ecommerce.shop.accounting.account;
 
-import accounting.account.events.*;
-import accounting.account.vo.RoleId;
+import org.ecommerce.shop.accounting.account.events.*;
+import org.ecommerce.shop.accounting.account.vo.RoleId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import accounting.account.exception.PasswordExpiredException;
-import accounting.account.vo.Credentials;
-import accounting.account.vo.Password;
+import org.ecommerce.shop.accounting.account.exception.PasswordExpiredException;
+import org.ecommerce.shop.accounting.account.vo.Credentials;
+import org.ecommerce.shop.accounting.account.vo.Password;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;

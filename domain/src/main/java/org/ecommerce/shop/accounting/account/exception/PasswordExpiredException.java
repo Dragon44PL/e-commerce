@@ -1,4 +1,4 @@
-package accounting.account.exception;
+package org.ecommerce.shop.accounting.account.exception;
 
 public class PasswordExpiredException extends RuntimeException {
 

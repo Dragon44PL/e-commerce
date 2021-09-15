@@ -1,6 +1,6 @@
-package accounting.account.events;
+package org.ecommerce.shop.accounting.account.events;
 
-import accounting.account.vo.RoleId;
+import org.ecommerce.shop.accounting.account.vo.RoleId;
 import java.time.Instant;
 import java.util.UUID;
 

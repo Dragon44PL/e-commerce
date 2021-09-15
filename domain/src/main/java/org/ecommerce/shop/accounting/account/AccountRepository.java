@@ -1,6 +1,6 @@
-package accounting.account;
+package org.ecommerce.shop.accounting.account;
 
-import domain.DomainRepository;
+import org.ecommerce.shop.core.DomainRepository;
 import java.util.UUID;
 
 interface AccountRepository extends DomainRepository<UUID, Account> { }

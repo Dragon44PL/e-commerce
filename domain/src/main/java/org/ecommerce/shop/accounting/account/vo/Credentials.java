@@ -1,4 +1,4 @@
-package accounting.account.vo;
+package org.ecommerce.shop.accounting.account.vo;
 
 public class Credentials {
     private final String username;
