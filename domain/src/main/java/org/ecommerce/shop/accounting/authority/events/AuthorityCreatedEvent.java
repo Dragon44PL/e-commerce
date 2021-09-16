@@ -1,4 +1,4 @@
-package accounting.authority.events;
+package org.ecommerce.shop.accounting.authority.events;
 
 import java.time.Instant;
 import java.util.UUID;

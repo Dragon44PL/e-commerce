@@ -1,7 +1,7 @@
-package accounting.authority;
+package org.ecommerce.shop.accounting.authority;
 
-import accounting.authority.events.AuthorityCreatedEvent;
-import accounting.authority.events.AuthorityEvent;
+import org.ecommerce.shop.accounting.authority.events.AuthorityCreatedEvent;
+import org.ecommerce.shop.accounting.authority.events.AuthorityEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
