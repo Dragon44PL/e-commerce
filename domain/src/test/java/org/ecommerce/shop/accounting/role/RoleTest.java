@@ -1,12 +1,12 @@
-package accounting.role;
+package org.ecommerce.shop.accounting.role;
 
-import accounting.role.events.RoleCreatedEvent;
-import accounting.role.events.RoleEvent;
-import accounting.role.vo.AuthorityId;
+import org.ecommerce.shop.accounting.role.events.RoleCreatedEvent;
+import org.ecommerce.shop.accounting.role.events.RoleEvent;
+import org.ecommerce.shop.accounting.role.vo.AuthorityId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import accounting.role.events.AuthorityAddedEvent;
-import accounting.role.events.AuthorityRemovedEvent;
+import org.ecommerce.shop.accounting.role.events.AuthorityAddedEvent;
+import org.ecommerce.shop.accounting.role.events.AuthorityRemovedEvent;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;

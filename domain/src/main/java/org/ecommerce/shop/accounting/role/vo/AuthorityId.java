@@ -1,4 +1,4 @@
-package accounting.role.vo;
+package org.ecommerce.shop.accounting.role.vo;
 
 import java.util.UUID;
 
