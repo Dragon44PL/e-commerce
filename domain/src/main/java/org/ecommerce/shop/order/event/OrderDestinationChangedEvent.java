@@ -1,6 +1,6 @@
-package orders.order.event;
+package org.ecommerce.shop.order.event;
 
-import orders.order.vo.OrderDestination;
+import org.ecommerce.shop.order.vo.OrderDestination;
 
 import java.time.Instant;
 import java.util.UUID;

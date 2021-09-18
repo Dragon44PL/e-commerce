@@ -1,8 +1,8 @@
-package orders.order.event;
+package org.ecommerce.shop.order.event;
 
-import orders.order.vo.OrderDestination;
-import orders.order.vo.OrderStatus;
-import orders.order.vo.OrderedProduct;
+import org.ecommerce.shop.order.vo.OrderDestination;
+import org.ecommerce.shop.order.vo.OrderStatus;
+import org.ecommerce.shop.order.vo.OrderedProduct;
 
 import java.time.Instant;
 import java.util.Set;

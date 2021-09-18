@@ -1,7 +1,7 @@
-package orders.order.vo;
+package org.ecommerce.shop.order.vo;
 
-import finance.vo.Money;
-import orders.order.exception.NegativeAmountException;
+import org.ecommerce.shop.finance.vo.Money;
+import org.ecommerce.shop.order.exception.NegativeAmountException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

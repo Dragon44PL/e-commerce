@@ -1,12 +1,12 @@
-package orders.order;
+package org.ecommerce.shop.order;
 
-import domain.AggregateRoot;
-import finance.vo.Money;
-import orders.order.event.*;
-import orders.order.exception.OrderStatusNotCapableException;
-import orders.order.vo.OrderDestination;
-import orders.order.vo.OrderStatus;
-import orders.order.vo.OrderedProduct;
+import org.ecommerce.shop.core.AggregateRoot;
+import org.ecommerce.shop.finance.vo.Money;
+import org.ecommerce.shop.order.event.*;
+import org.ecommerce.shop.order.exception.OrderStatusNotCapableException;
+import org.ecommerce.shop.order.vo.OrderDestination;
+import org.ecommerce.shop.order.vo.OrderStatus;
+import org.ecommerce.shop.order.vo.OrderedProduct;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package orders.order.vo;
+package org.ecommerce.shop.order.vo;
 
 public enum OrderStatus {
     PENDING, SHIPPED, CANCELLED, DECLINED, COMPLETED, PROCESSED, DELIVERED;

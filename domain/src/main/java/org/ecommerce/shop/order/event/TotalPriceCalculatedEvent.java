@@ -1,6 +1,6 @@
-package orders.order.event;
+package org.ecommerce.shop.order.event;
 
-import finance.vo.Money;
+import org.ecommerce.shop.finance.vo.Money;
 
 import java.time.Instant;
 import java.util.UUID;

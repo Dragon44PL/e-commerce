@@ -1,4 +1,4 @@
-package orders.order.vo;
+package org.ecommerce.shop.order.vo;
 
 import java.util.UUID;
 

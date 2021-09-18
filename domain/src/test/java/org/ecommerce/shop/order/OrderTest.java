@@ -1,12 +1,12 @@
-package orders.order;
+package org.ecommerce.shop.order;
 
-import finance.vo.Money;
-import orders.order.event.OrderCreatedEvent;
-import orders.order.event.OrderEvent;
-import orders.order.event.TotalPriceCalculatedEvent;
-import orders.order.vo.OrderDestination;
-import orders.order.vo.OrderStatus;
-import orders.order.vo.OrderedProduct;
+import org.ecommerce.shop.finance.vo.Money;
+import org.ecommerce.shop.order.event.OrderCreatedEvent;
+import org.ecommerce.shop.order.event.OrderEvent;
+import org.ecommerce.shop.order.event.TotalPriceCalculatedEvent;
+import org.ecommerce.shop.order.vo.OrderDestination;
+import org.ecommerce.shop.order.vo.OrderStatus;
+import org.ecommerce.shop.order.vo.OrderedProduct;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

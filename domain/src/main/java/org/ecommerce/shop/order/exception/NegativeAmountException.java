@@ -1,4 +1,4 @@
-package orders.order.exception;
+package org.ecommerce.shop.order.exception;
 
 public class NegativeAmountException extends RuntimeException {
 
