@@ -1,6 +1,6 @@
-package products.stock.event;
+package org.ecommerce.shop.products.stock.event;
 
-import products.stock.vo.ProductAvailability;
+import org.ecommerce.shop.products.stock.vo.ProductAvailability;
 import java.time.Instant;
 import java.util.UUID;
 

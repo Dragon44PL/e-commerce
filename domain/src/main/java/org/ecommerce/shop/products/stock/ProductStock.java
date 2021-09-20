@@ -1,14 +1,14 @@
-package products.stock;
+package org.ecommerce.shop.products.stock;
 
-import domain.AggregateRoot;
-import products.stock.event.*;
-import products.stock.exception.ProductClosedException;
-import products.stock.exception.ProductInactiveException;
-import products.stock.exception.ProductUnavailableException;
-import products.stock.vo.ProductAvailability;
-import products.stock.vo.ProductId;
-import products.stock.vo.ProductQuantity;
-import products.stock.vo.ProductState;
+import org.ecommerce.shop.core.AggregateRoot;
+import org.ecommerce.shop.products.stock.event.*;
+import org.ecommerce.shop.products.stock.exception.ProductClosedException;
+import org.ecommerce.shop.products.stock.exception.ProductInactiveException;
+import org.ecommerce.shop.products.stock.exception.ProductUnavailableException;
+import org.ecommerce.shop.products.stock.vo.ProductAvailability;
+import org.ecommerce.shop.products.stock.vo.ProductId;
+import org.ecommerce.shop.products.stock.vo.ProductQuantity;
+import org.ecommerce.shop.products.stock.vo.ProductState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

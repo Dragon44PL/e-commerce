@@ -1,6 +1,6 @@
-package products.stock.vo;
+package org.ecommerce.shop.products.stock.vo;
 
-import products.stock.exception.ProductOutOfStockException;
+import org.ecommerce.shop.products.stock.exception.ProductOutOfStockException;
 
 public record ProductQuantity(int quantity) {
 

@@ -1,8 +1,8 @@
-package products.stock.vo;
+package org.ecommerce.shop.products.stock.vo;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import products.stock.exception.ProductOutOfStockException;
+import org.ecommerce.shop.products.stock.exception.ProductOutOfStockException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

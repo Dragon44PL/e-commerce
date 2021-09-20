@@ -1,4 +1,4 @@
-package products.stock.exception;
+package org.ecommerce.shop.products.stock.exception;
 
 public class ProductInactiveException extends ProductUnavailableException {
 

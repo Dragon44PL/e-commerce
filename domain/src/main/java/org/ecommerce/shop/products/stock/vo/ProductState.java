@@ -1,4 +1,4 @@
-package products.stock.vo;
+package org.ecommerce.shop.products.stock.vo;
 
 public enum ProductState {
 
