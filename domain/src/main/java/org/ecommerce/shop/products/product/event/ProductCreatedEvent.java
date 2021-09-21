@@ -1,8 +1,8 @@
-package products.product.event;
+package org.ecommerce.shop.products.product.event;
 
-import finance.vo.Money;
-import products.product.vo.CategoryId;
-import products.product.vo.ProductDetails;
+import org.ecommerce.shop.finance.vo.Money;
+import org.ecommerce.shop.products.product.vo.CategoryId;
+import org.ecommerce.shop.products.product.vo.ProductDetails;
 import java.time.Instant;
 import java.util.UUID;
 

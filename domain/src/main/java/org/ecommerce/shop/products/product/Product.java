@@ -1,11 +1,11 @@
-package products.product;
+package org.ecommerce.shop.products.product;
 
-import domain.AggregateRoot;
-import finance.vo.Money;
-import products.product.event.*;
-import products.product.exception.NegativePriceException;
-import products.product.vo.CategoryId;
-import products.product.vo.ProductDetails;
+import org.ecommerce.shop.core.AggregateRoot;
+import org.ecommerce.shop.finance.vo.Money;
+import org.ecommerce.shop.products.product.event.*;
+import org.ecommerce.shop.products.product.exception.NegativePriceException;
+import org.ecommerce.shop.products.product.vo.CategoryId;
+import org.ecommerce.shop.products.product.vo.ProductDetails;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package products.category.vo;
+package org.ecommerce.shop.products.product.vo;
 
 import java.util.UUID;
 

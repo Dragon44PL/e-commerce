@@ -1,4 +1,4 @@
-package products.product.exception;
+package org.ecommerce.shop.products.product.exception;
 
 public class NegativePriceException extends RuntimeException {
 

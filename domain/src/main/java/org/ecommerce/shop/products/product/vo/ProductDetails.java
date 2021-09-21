@@ -1,4 +1,4 @@
-package products.product.vo;
+package org.ecommerce.shop.products.product.vo;
 
 public record ProductDetails(String name, String description) {
 

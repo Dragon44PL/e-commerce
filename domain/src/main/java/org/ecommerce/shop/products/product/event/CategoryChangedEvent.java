@@ -1,6 +1,6 @@
-package products.product.event;
+package org.ecommerce.shop.products.product.event;
 
-import products.product.vo.CategoryId;
+import org.ecommerce.shop.products.product.vo.CategoryId;
 import java.time.Instant;
 import java.util.UUID;
 

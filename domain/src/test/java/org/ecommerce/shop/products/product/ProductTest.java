@@ -1,12 +1,12 @@
-package products.product;
+package org.ecommerce.shop.products.product;
 
-import finance.vo.Money;
+import org.ecommerce.shop.finance.vo.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import products.product.event.*;
-import products.product.exception.NegativePriceException;
-import products.product.vo.CategoryId;
-import products.product.vo.ProductDetails;
+import org.ecommerce.shop.products.product.event.*;
+import org.ecommerce.shop.products.product.exception.NegativePriceException;
+import org.ecommerce.shop.products.product.vo.CategoryId;
+import org.ecommerce.shop.products.product.vo.ProductDetails;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
