@@ -1,12 +1,12 @@
-package products.category;
+package org.ecommerce.shop.products.category;
 
-import products.category.event.CategoryCreatedEvent;
-import products.category.event.CategoryEvent;
-import products.category.event.CategoryNameChangedEvent;
-import products.category.event.ParentCategoryChangedEvent;
-import products.category.exception.ParentCategoryIdException;
-import products.category.vo.CategoryId;
-import domain.AggregateRoot;
+import org.ecommerce.shop.products.category.event.CategoryCreatedEvent;
+import org.ecommerce.shop.products.category.event.CategoryEvent;
+import org.ecommerce.shop.products.category.event.CategoryNameChangedEvent;
+import org.ecommerce.shop.products.category.event.ParentCategoryChangedEvent;
+import org.ecommerce.shop.products.category.vo.CategoryId;
+import org.ecommerce.shop.core.AggregateRoot;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,14 +46,12 @@ class Category extends AggregateRoot<UUID, CategoryEvent> {
         return parentCategory != null;
     }
 
-    void changeParentCategory(CategoryId parentCategory) throws ParentCategoryIdException {
-        if(sameCategory(parentCategory)) {
-            throw new ParentCategoryIdException();
+    void changeParentCategory(CategoryId parentCategory) {
+        if(!sameCategory(parentCategory)) {
+            this.parentCategory = parentCategory;
+            final ParentCategoryChangedEvent parentCategoryChangedEvent = new ParentCategoryChangedEvent(id, this.parentCategory);
+            registerEvent(parentCategoryChangedEvent);
         }
-
-        this.parentCategory = parentCategory;
-        final ParentCategoryChangedEvent parentCategoryChangedEvent = new ParentCategoryChangedEvent(id, this.parentCategory);
-        registerEvent(parentCategoryChangedEvent);
     }
 
     void changeCategoryName(String candidate) {

@@ -1,6 +1,6 @@
-package products.category;
+package org.ecommerce.shop.products.category;
 
-import domain.DomainRepository;
+import org.ecommerce.shop.core.DomainRepository;
 import java.util.UUID;
 
 interface CategoryRepository extends DomainRepository<UUID, Category> { }

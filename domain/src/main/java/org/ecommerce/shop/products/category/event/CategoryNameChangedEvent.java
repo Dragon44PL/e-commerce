@@ -1,4 +1,4 @@
-package products.category.event;
+package org.ecommerce.shop.products.category.event;
 
 import java.time.Instant;
 import java.util.UUID;
