@@ -1,11 +1,11 @@
-package products.category;
+package org.ecommerce.shop.products.category;
 
-import products.category.event.CategoryCreatedEvent;
-import products.category.event.CategoryEvent;
-import products.category.event.CategoryNameChangedEvent;
-import products.category.event.ParentCategoryChangedEvent;
-import products.category.exception.ParentCategoryIdException;
-import products.category.vo.CategoryId;
+import org.ecommerce.shop.products.category.event.CategoryCreatedEvent;
+import org.ecommerce.shop.products.category.event.CategoryEvent;
+import org.ecommerce.shop.products.category.event.CategoryNameChangedEvent;
+import org.ecommerce.shop.products.category.event.ParentCategoryChangedEvent;
+import org.ecommerce.shop.products.category.exception.ParentCategoryIdException;
+import org.ecommerce.shop.products.category.vo.CategoryId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
